@@ -20,7 +20,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FlUnit.Abstractions" Version="1.*" />
+		<PackageReference Include="FlUnit.Abstractions" Version="1.*" GeneratePathProperty="true">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -29,7 +31,7 @@
 	<ItemGroup>
 		<None Include="build\**\*" Pack="true" PackagePath="build\" />
 		<None Include="lib\**\*" Pack="true" PackagePath="lib\" />
-		<None Include="$(OutDir)FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
+		<None Include="$(PkgFlUnit_Abstractions)\lib\$(TargetFramework)\FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
 	</ItemGroup>
 
     <ItemGroup>
