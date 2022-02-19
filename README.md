@@ -1,6 +1,6 @@
 ﻿![FlUnit Logo](src/FlUnitIcon.png)
 
-# FlUnit.Adapters.VSTest
+# FlUnit.VS.TestAdapter
 
 [![NuGet version (FlUnit.VS.TestAdapter)](https://img.shields.io/nuget/v/FlUnit.VS.TestAdapter.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/) [![NuGet downloads (FlUnit.Adapters.VSTest)](https://img.shields.io/nuget/dt/FlUnit.VS.TestAdapter.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/)
 
