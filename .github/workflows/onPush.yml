@@ -1,0 +1,21 @@
+name: Validation Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Build
+      working-directory: ./src
+      run: dotnet build
+
+    - name: Run VSTest Adapter Tests
+      working-directory: ./src/FlUnit.Adapters.VSTest.Tests
+      run: dotnet test
