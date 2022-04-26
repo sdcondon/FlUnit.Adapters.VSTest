@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters.VSTest.ArchetypalTestProject
 {
@@ -75,6 +76,11 @@ namespace FlUnit.Adapters.VSTest.ArchetypalTestProject
         // Pointless test (that nevertheless serves as an example of the simplest possible valid test)
         public static Test Nothing => TestThat
             .When(() => { })
+            .ThenReturns();
+
+        // Pointless test (that nevertheless serves as an example of the simplest possible valid test)
+        public static Test Delay => TestThat
+            .When(() => Task.Delay(TimeSpan.FromSeconds(2)).Wait())
             .ThenReturns();
 
         // Block bodies are fine (as would be using delegates pointing at non-anonymous methods).

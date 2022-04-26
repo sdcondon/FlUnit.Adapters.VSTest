@@ -61,6 +61,7 @@ namespace FlUnit.Adapters.VSTest
             {
                 StartTime = startTime,
                 EndTime = endTime,
+                Duration = endTime - startTime,
                 DisplayName = displayName,
                 Outcome = MapOutcome(outcome),
                 ErrorMessage = errorMessage,
