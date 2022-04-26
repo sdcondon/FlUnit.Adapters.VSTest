@@ -70,13 +70,13 @@ namespace FlUnit.Adapters
                 {
                     foreach (var testCase in test.Cases)
                     {
-                        var actionStart = DateTimeOffset.Now;
+                        var startTime = DateTimeOffset.Now;
                         testCase.Act();
-                        var actionEnd = DateTimeOffset.Now;
 
                         foreach (var assertion in testCase.Assertions)
                         {
-                            allAssertionsPassed &= CheckTestAssertion(test, testCase, actionStart, actionEnd, assertion, testConfiguration, testContainer);
+                            allAssertionsPassed &= CheckTestAssertion(test, testCase, startTime, assertion, testConfiguration, testContainer);
+                            startTime = DateTimeOffset.Now;
                         }
                     }
                 }
@@ -124,13 +124,15 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset actionStart, DateTimeOffset actionEnd, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
+        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
         {
-            // NB: We use the start and end time for the test action as the start and end time for each assertion result.
-            // The assumption being that assertions themselves will generally be (fast and) less interesting.
-            // This is something to consider configurability for at some point.
-            var startTime = actionStart;
-            var endTime = actionEnd;
+            // NB: Because VSTest test duration is always the sum of the test result durations, having results for each assertion
+            // is fighting VSTest a little bit. Rather than include the test action duration in each test result (and this have
+            // reported test duration multiply for every assertion that is added), we only include the action duration in the first
+            // assertion for any given case (noting that using e.g. parameterless ThenReturns() will then give you something very
+            // close to the action duration as the duration of the first result).
+            // This is something to consider configurability for at some point - probably in the context of wider test execution strategy
+            // (e.g. allowing for re-running the test action for each assertion)
             string displayName = null;
             TestOutcome outcome = TestOutcome.Failed;
             string errorMessage = null;
@@ -154,7 +156,7 @@ namespace FlUnit.Adapters
             {
                 testContainer.RecordResult(
                     startTime,
-                    endTime,
+                    DateTimeOffset.Now,
                     displayName,
                     outcome,
                     errorMessage,

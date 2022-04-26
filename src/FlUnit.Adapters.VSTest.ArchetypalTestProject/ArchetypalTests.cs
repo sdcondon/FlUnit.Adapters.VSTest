@@ -78,10 +78,15 @@ namespace FlUnit.Adapters.VSTest.ArchetypalTestProject
             .When(() => { })
             .ThenReturns();
 
-        // Pointless test (that nevertheless serves as an example of the simplest possible valid test)
-        public static Test Delay => TestThat
-            .When(() => Task.Delay(TimeSpan.FromSeconds(2)).Wait())
-            .ThenReturns();
+        // Long-running test
+        public static Test LongRunning => TestThat
+            .Given(() => new
+            {
+                startTime = DateTimeOffset.Now
+            })
+            .When(g => Task.Delay(TimeSpan.FromSeconds(2)).Wait())
+            .ThenReturns()
+            .And(g => (DateTimeOffset.Now - g.startTime).Should().BeGreaterThan(TimeSpan.FromSeconds(2)));
 
         // Block bodies are fine (as would be using delegates pointing at non-anonymous methods).
         public static Test BlockBodies => TestThat
