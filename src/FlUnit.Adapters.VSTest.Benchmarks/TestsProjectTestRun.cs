@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using FlUnit.Adapters.VSTest;
-using FlUnit.Adapters.VSTest.ArchetypalTestProject;
+using FlUnit.Adapters.VSTest.Tests.TestProject;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -9,13 +9,13 @@ namespace FlUnit.Benchmarks
 {
     [MemoryDiagnoser]
     [InProcess]
-    public class ArchetypalTestRun
+    public class TestsProjectTestRun
     {
         [Benchmark(Baseline = true)]
         public void Baseline()
         {
             new TestExecutor().RunTests(
-                sources: new[] { typeof(ArchetypalTests).Assembly.Location },
+                sources: new[] { typeof(Tests).Assembly.Location },
                 new FakeRunContext(),
                 new FakeFrameworkHandle());
         }

@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlUnit.Adapters.VSTest.ArchetypalTestProject\FlUnit.Adapters.VSTest.ArchetypalTestProject.csproj" />
+    <ProjectReference Include="..\FlUnit.Adapters.VSTest.Tests.TestProject\FlUnit.Adapters.VSTest.Tests.TestProject.csproj" />
     <ProjectReference Include="..\FlUnit.Adapters.VSTest\FlUnit.Adapters.VSTest.csproj" />
   </ItemGroup>
 

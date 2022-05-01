@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest.Benc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest.Tests", "FlUnit.Adapters.VSTest.Tests\FlUnit.Adapters.VSTest.Tests.csproj", "{AA0FF464-C5AE-4050-A84C-C765DAE6AB4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest.ArchetypalTestProject", "FlUnit.Adapters.VSTest.ArchetypalTestProject\FlUnit.Adapters.VSTest.ArchetypalTestProject.csproj", "{31DD313C-36B8-4F38-9DBA-6D59DC148947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlUnit.Adapters.VSTest.Tests.TestProject", "FlUnit.Adapters.VSTest.Tests.TestProject\FlUnit.Adapters.VSTest.Tests.TestProject.csproj", "{31DD313C-36B8-4F38-9DBA-6D59DC148947}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
