@@ -53,8 +53,8 @@ namespace FlUnit.Adapters
 
         private void RunTest(ITestContainer testContainer, TestConfiguration testConfiguration)
         {
-            var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
-            //using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
+            //var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
+            using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
             {
                 if (test.HasConfigurationOverrides)
                 {
@@ -105,7 +105,7 @@ namespace FlUnit.Adapters
 
             try
             {
-                test.Arrange();
+                test.Arrange(testContainer.TestContext);
                 return true;
             }
             catch (Exception e)

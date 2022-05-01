@@ -8,13 +8,14 @@ namespace FlUnit.Adapters.VSTest
 {
     /// <summary>
     /// The VSTest adapter's implementation of <see cref="ITestContainer"/>.
-    /// Intended for consumption by FlUnit's core execution logic (i.e. the <see cref="TestRun"/> class).
+    /// Intended for consumption (via its interface) by FlUnit's core execution logic (i.e. the <see cref="TestRun"/> class).
     /// </summary>
     internal class TestContainer : ITestContainer
     {
+        private readonly TestCase testCase;
         private readonly IRunContext runContext;
         private readonly IFrameworkHandle frameworkHandle;
-        private readonly TestCase testCase;
+        private readonly TestContext testContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestContainer"/> class.
@@ -35,12 +36,14 @@ namespace FlUnit.Adapters.VSTest
             TestMetadata = new TestMetadata(propertyInfo, testCase.Traits.Select(t => new Trait(t.Name, t.Value)));
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
+            this.testContext = new TestContext();
         }
 
-        /// <summary>
-        /// Gets the FlUnit metadata for the test.
-        /// </summary>
+        /// <inheritdoc/>
         public TestMetadata TestMetadata { get; }
+
+        /// <inheritdoc/>
+        public ITestContext TestContext => testContext;
 
         /// <inheritdoc/>
         public void RecordStart()
@@ -57,7 +60,7 @@ namespace FlUnit.Adapters.VSTest
             string errorMessage,
             string errorStackTrace)
         {
-            frameworkHandle.RecordResult(new TestResult(testCase)
+            var result = new TestResult(testCase)
             {
                 StartTime = startTime,
                 EndTime = endTime,
@@ -66,7 +69,15 @@ namespace FlUnit.Adapters.VSTest
                 Outcome = MapOutcome(outcome),
                 ErrorMessage = errorMessage,
                 ErrorStackTrace = errorStackTrace,
-            });
+
+            };
+
+            foreach (var outputMessage in testContext.FlushOutputMessages())
+            {
+                result.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, outputMessage));
+            }
+
+            frameworkHandle.RecordResult(result);
         }
 
         /// <inheritdoc/>

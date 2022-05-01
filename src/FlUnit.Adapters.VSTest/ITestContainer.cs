@@ -21,6 +21,11 @@ namespace FlUnit.Adapters
         TestMetadata TestMetadata { get; }
 
         /// <summary>
+        /// Gets the <see cref="ITestContext"/> object that should be passed to the <see cref="Test.Arrange(ITestContext)"/> method for this test.
+        /// </summary>
+        ITestContext TestContext { get; }
+
+        /// <summary>
         /// Records that execution of this test has begun.
         /// </summary>
         void RecordStart();

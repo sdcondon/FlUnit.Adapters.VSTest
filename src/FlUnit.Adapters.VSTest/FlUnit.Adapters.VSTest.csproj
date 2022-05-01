@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FlUnit.Abstractions" Version="1.*" GeneratePathProperty="true">
+		<PackageReference Include="FlUnit.Abstractions" Version="2.0.0-pre.1" GeneratePathProperty="true">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.0.0">
