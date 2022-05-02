@@ -25,27 +25,25 @@ namespace FlUnit.Adapters.VSTest
             ITestCaseDiscoverySink discoverySink)
         {
             var testRunConfiguration = TestRunConfiguration.ReadFromXml(discoveryContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
-            MakeTestCases(sources, discoveryContext, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
+            MakeTestCases(sources, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
         }
 
         internal static List<TestCase> MakeTestCases(
             IEnumerable<string> sources,
-            IDiscoveryContext discoveryContext,
             IMessageLogger logger,
             TestRunConfiguration testRunConfiguration)
         {
-            return sources.SelectMany(s => MakeTestCases(s, discoveryContext, logger, testRunConfiguration)).ToList();
+            return sources.SelectMany(s => MakeTestCases(s, logger, testRunConfiguration)).ToList();
         }
 
         private static List<TestCase> MakeTestCases(
             string source,
-            IDiscoveryContext discoveryContext,
             IMessageLogger logger,
             TestRunConfiguration testRunConfiguration)
         {
             var assembly = Assembly.LoadFile(source); // TODO: check exactly how other adapters go about this
 
-            logger?.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {assembly.FullName}");
+            logger.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {assembly.FullName}");
 
             var testMetadata = TestDiscovery.FindTests(assembly, testRunConfiguration);
 
@@ -83,7 +81,7 @@ namespace FlUnit.Adapters.VSTest
                     testCases.Add(testCase);
 
                     // TODO: Neater message when there are no traits (or simply don't include them - was only a quick and dirty test)
-                    logger?.SendMessage(
+                    logger.SendMessage(
                         TestMessageLevel.Informational,
                         $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
                 }

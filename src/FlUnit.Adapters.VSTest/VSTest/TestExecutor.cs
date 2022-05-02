@@ -24,7 +24,7 @@ namespace FlUnit.Adapters.VSTest
             var testRunConfiguration = TestRunConfiguration.ReadFromXml(runContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
 
             RunTests(
-                TestDiscoverer.MakeTestCases(sources, runContext, null, testRunConfiguration),
+                TestDiscoverer.MakeTestCases(sources, frameworkHandle, testRunConfiguration),
                 runContext,
                 frameworkHandle,
                 testRunConfiguration);

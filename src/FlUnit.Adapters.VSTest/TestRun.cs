@@ -53,7 +53,6 @@ namespace FlUnit.Adapters
 
         private void RunTest(ITestContainer testContainer, TestConfiguration testConfiguration)
         {
-            //var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
             using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
             {
                 if (test.HasConfigurationOverrides)
