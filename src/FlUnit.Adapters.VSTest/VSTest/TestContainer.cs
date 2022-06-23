@@ -112,16 +112,16 @@ namespace FlUnit.Adapters.VSTest
         /// </summary>
         private void Dump()
         {
-            frameworkHandle.SendMessage(TestMessageLevel.Informational, $"DUMPING PROPERTIES FOR TEST '{testCase.GetPropertyValue(testCase.Properties.SingleOrDefault(p => p.Id == "TestCase.DisplayName"))}'");
+            frameworkHandle.SendMessage(TestMessageLevel.Informational, $"DUMPING TEST '{testCase.GetPropertyValue(testCase.Properties.SingleOrDefault(p => p.Id == "TestCase.DisplayName"))}'");
 
             foreach (var property in testCase.Properties)
             {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\t{property.Id} - {testCase.GetPropertyValue(property)}");
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tPROPERTY: {property.Id} - {testCase.GetPropertyValue(property)}");
             }
 
             foreach (var trait in testCase.Traits)
             {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\t{trait.Name} - {trait.Value}");
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tTRAIT: {trait.Name} - {trait.Value}");
             }
         }
     }
