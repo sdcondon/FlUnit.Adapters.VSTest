@@ -70,6 +70,9 @@ namespace FlUnit.Adapters
 
                 while (true)
                 {
+                    // NB: Iterator method "moves forward" when MoveNext is called, so a new group is only
+                    // actually consumed when MoveNext is first called, not when GetEnumerator is called.
+                    // Perhaps a little unintuitive? Perhaps even problematic?
                     if (currentGroupEnumerator == null || !currentGroupEnumerator.MoveNext())
                     {
                         lock (nextGroupLock)
