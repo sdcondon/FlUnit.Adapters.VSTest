@@ -20,11 +20,11 @@ namespace FlUnit.Adapters
         /// </summary>
         public bool Parallelise { get; set; } = true;
 
-        /////// <summary>
-        /////// Gets or sets the trait name to control partitioning of tests run in parallel.
-        /////// Tests with the same value for the trait with this key will be executed in the same partition, and thus not run in parallel.
-        /////// </summary>
-        ////public bool ParallelPartitionKey { get; set; }
+        /// <summary>
+        /// Gets or sets the trait name to control partitioning of tests run in parallel.
+        /// Tests with the same value for the trait with this key will be executed in the same partition, and thus not run in parallel with one another.
+        /// </summary>
+        public string ParallelPartitioningTrait { get; set; }
 
         /// <summary>
         /// Reads and returns a <see cref="TestRunConfiguration"/> instance from an XML string.
@@ -70,6 +70,10 @@ namespace FlUnit.Adapters
                     if (reader.IsAtElementWithName(nameof(Parallelise)))
                     {
                         reader.TryReadBoolean(b => configuration.Parallelise = b);
+                    }
+                    else if (reader.IsAtElementWithName(nameof(ParallelPartitioningTrait)))
+                    {
+                        reader.TryReadString(s => configuration.ParallelPartitioningTrait = s);
                     }
                     else if (reader.IsAtElementWithName(nameof(TestConfiguration)))
                     {

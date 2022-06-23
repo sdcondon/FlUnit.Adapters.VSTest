@@ -1,0 +1,86 @@
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FlUnit.Adapters.VSTest.Tests
+{
+    [TestClass]
+    public class TestContainerPartitionerTests
+    {
+        [TestMethod]
+        public void Smoke()
+        {
+            var partitioner = new TestContainerTraitPartitioner(new FakeTestContainer[]
+            {
+                new("1"),
+                new("2"),
+                new("3"),
+                new("4"),
+
+                new("1"),
+                new("2"),
+                new("3"),
+
+                new("1"),
+                new("2"),
+
+                new("1"),
+            }, 
+            "MyTrait");
+
+            var dynamicPartitions = partitioner.GetDynamicPartitions();
+            var partition1 = dynamicPartitions.GetEnumerator();
+            NextValueShouldExistAndHaveTraitValue(partition1, "1");
+            var partition2 = dynamicPartitions.GetEnumerator();
+            NextValueShouldExistAndHaveTraitValue(partition2, "2");
+            NextValueShouldExistAndHaveTraitValue(partition1, "1");
+            var partition3 = dynamicPartitions.GetEnumerator();
+            NextValueShouldExistAndHaveTraitValue(partition3, "3");
+            NextValueShouldExistAndHaveTraitValue(partition2, "2");
+            NextValueShouldExistAndHaveTraitValue(partition1, "1");
+            var partition4 = dynamicPartitions.GetEnumerator();
+            NextValueShouldExistAndHaveTraitValue(partition4, "4");
+            NextValueShouldExistAndHaveTraitValue(partition3, "3");
+            NextValueShouldExistAndHaveTraitValue(partition2, "2");
+            NextValueShouldExistAndHaveTraitValue(partition1, "1");
+            var partition5 = dynamicPartitions.GetEnumerator();
+            partition5.MoveNext().Should().BeFalse();
+            partition4.MoveNext().Should().BeFalse();
+            partition3.MoveNext().Should().BeFalse();
+            partition2.MoveNext().Should().BeFalse();
+            partition1.MoveNext().Should().BeFalse();
+        }
+
+        private static void NextValueShouldExistAndHaveTraitValue(IEnumerator<ITestContainer> partition, string value)
+        {
+            partition.MoveNext().Should().BeTrue();
+            partition.Current.TestMetadata.Traits.Single(t => t.Name == "MyTrait").Value.Should().Be(value);
+        }
+
+        private class FakeTestContainer : ITestContainer
+        {
+            public FakeTestContainer(string traitValue)
+            {
+                TestMetadata = new TestMetadata(null, new[]
+                {
+                    new Trait("MyTrait", traitValue)
+                });
+            }
+
+            public TestMetadata TestMetadata { get; }
+
+            public ITestContext TestContext => throw new NotImplementedException();
+
+            public void RecordEnd(TestOutcome outcome) => 
+                throw new NotImplementedException();
+
+            public void RecordResult(DateTimeOffset startTime, DateTimeOffset endTime, string displayName, TestOutcome outcome, string errorMessage, string errorStackTrace) =>
+                throw new NotImplementedException();
+
+            public void RecordStart() =>
+                throw new NotImplementedException();
+        }
+    }
+}

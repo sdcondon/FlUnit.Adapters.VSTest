@@ -1,5 +1,6 @@
 ﻿using FlUnit.Configuration;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,13 +34,26 @@ namespace FlUnit.Adapters
         {
             if (testRunConfiguration.Parallelise)
             {
-                Parallel.ForEach(
-                    testContainers,
-                    new ParallelOptions()
-                    {
-                        CancellationToken = cancellationToken
-                    },
-                    tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+                if (!string.IsNullOrEmpty(testRunConfiguration.ParallelPartitioningTrait))
+                {
+                    Parallel.ForEach(
+                        new TestContainerTraitPartitioner(testContainers, testRunConfiguration.ParallelPartitioningTrait),
+                        new ParallelOptions()
+                        {
+                            CancellationToken = cancellationToken
+                        },
+                        tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+                }
+                else
+                {
+                    Parallel.ForEach(
+                        testContainers,
+                        new ParallelOptions()
+                        {
+                            CancellationToken = cancellationToken
+                        },
+                        tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+                }
             }
             else
             {

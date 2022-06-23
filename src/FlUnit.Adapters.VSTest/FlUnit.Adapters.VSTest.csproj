@@ -20,6 +20,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="FlUnit.Adapters.VSTest.Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="FlUnit.Abstractions" Version="2.0.0-pre.1" GeneratePathProperty="true">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

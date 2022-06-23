@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -25,8 +26,6 @@ namespace FlUnit.Adapters.VSTest
         /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
         public TestContainer(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
-            ////DumpTestCase(testCase, frameworkHandle);
-
             var propertyDetails = ((string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp)).Split(':');
             var assembly = Assembly.Load(propertyDetails[0]); // Might already be loaded - not sure of best practices here. Also, expensive call(s) in a ctor is not ideal (though this class is internal..). Fine for now..
             var type = assembly.GetType(propertyDetails[1]);
@@ -37,6 +36,8 @@ namespace FlUnit.Adapters.VSTest
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
             this.testContext = new TestContext();
+
+            ////Dump();
         }
 
         /// <inheritdoc/>
@@ -72,9 +73,14 @@ namespace FlUnit.Adapters.VSTest
 
             };
 
-            foreach (var outputMessage in testContext.FlushOutputMessages())
+            foreach (var message in testContext.FlushOutputMessages())
             {
-                result.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, outputMessage));
+                result.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, message));
+            }
+
+            foreach (var message in testContext.FlushErrorMessages())
+            {
+                result.Messages.Add(new TestResultMessage(TestResultMessage.StandardErrorCategory, message));
             }
 
             frameworkHandle.RecordResult(result);
@@ -101,12 +107,22 @@ namespace FlUnit.Adapters.VSTest
             };
         }
 
-        ////private static void DumpTestCase(TestCase testCase, IFrameworkHandle frameworkHandle)
-        ////{
-        ////    foreach (var property in testCase.Properties)
-        ////    {
-        ////        frameworkHandle.SendMessage(TestMessageLevel.Informational, $"PROP: {property.Id} - {property.Label} - {property.ValueType}");
-        ////    }
-        ////}
+        /// <summary>
+        /// Dumps all VSTest properties and traits to the framework as informational messages. 
+        /// </summary>
+        private void Dump()
+        {
+            frameworkHandle.SendMessage(TestMessageLevel.Informational, $"DUMPING PROPERTIES FOR TEST '{testCase.GetPropertyValue(testCase.Properties.SingleOrDefault(p => p.Id == "TestCase.DisplayName"))}'");
+
+            foreach (var property in testCase.Properties)
+            {
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\t{property.Id} - {testCase.GetPropertyValue(property)}");
+            }
+
+            foreach (var trait in testCase.Traits)
+            {
+                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\t{trait.Name} - {trait.Value}");
+            }
+        }
     }
 }

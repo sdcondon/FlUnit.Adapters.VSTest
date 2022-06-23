@@ -9,6 +9,7 @@ namespace FlUnit.Adapters.VSTest._Tests
         private static readonly object ExpectedDefaultSettings = new
         {
             Parallelise = true,
+            ParallelPartitioningTrait = (string)null,
             TestConfiguration = new
             {
                 ArrangementFailureCountsAsFailed = false
@@ -31,6 +32,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                       <!-- commenty comment -->
                       <junksetting>i am junk</junksetting>
                       <parallelise>false</parallelise>
+                      <parallelpartitioningtrait>foo</parallelpartitioningtrait>
                       <testconfiguration>
                         <ArrangementFailureCountsAsFailed>true</ArrangementFailureCountsAsFailed>
                         <junksetting/>
@@ -42,6 +44,7 @@ namespace FlUnit.Adapters.VSTest._Tests
             TestRunConfiguration.ReadFromXml(xml, "flunit").Should().BeEquivalentTo(new
             {
                 Parallelise = false,
+                ParallelPartitioningTrait = "foo",
                 TestConfiguration = new
                 {
                     ArrangementFailureCountsAsFailed = true

@@ -68,6 +68,18 @@ namespace FlUnit.Adapters
         }
 
         /// <summary>
+        /// Tries to read a string value from the inner XML of the current node.
+        /// </summary>
+        /// <param name="reader">The reader to use.</param>
+        /// <param name="setter">The action to invoke with the read value, if successful.</param>
+        /// <returns>True if a value has been successfully read, otherwise false.</returns>
+        public static bool TryReadString(this XmlReader reader, Action<string> setter)
+        {
+            setter(reader.ReadInnerXml());
+            return true;
+        }
+
+        /// <summary>
         /// Tries to read an enum value from the inner XML of the current node.
         /// </summary>
         /// <param name="reader">The reader to use.</param>
