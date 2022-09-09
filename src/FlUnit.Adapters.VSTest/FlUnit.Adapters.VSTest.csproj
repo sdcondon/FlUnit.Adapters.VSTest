@@ -27,6 +27,10 @@
 		<PackageReference Include="FlUnit.Abstractions" Version="2.0.0" GeneratePathProperty="true">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.3.1">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
