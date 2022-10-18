@@ -36,7 +36,7 @@ namespace FlUnit.Benchmarks
 
             public IRunSettings RunSettings => null!;
 
-            public ITestCaseFilterExpression GetTestCaseFilter(IEnumerable<string> supportedProperties, Func<string, TestProperty> propertyProvider)
+            public ITestCaseFilterExpression? GetTestCaseFilter(IEnumerable<string>? supportedProperties, Func<string, TestProperty?> propertyProvider)
             {
                 throw new NotImplementedException();
             }
@@ -50,7 +50,7 @@ namespace FlUnit.Benchmarks
                 set => throw new NotImplementedException();
             }
 
-            public int LaunchProcessWithDebuggerAttached(string filePath, string workingDirectory, string arguments, IDictionary<string, string> environmentVariables)
+            public int LaunchProcessWithDebuggerAttached(string filePath, string workingDirectory, string arguments, IDictionary<string, string?> environmentVariables)
             {
                 throw new NotImplementedException();
             }
