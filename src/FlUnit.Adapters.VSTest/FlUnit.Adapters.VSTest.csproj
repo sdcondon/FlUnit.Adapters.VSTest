@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>FlUnit.VS.TestAdapter</AssemblyName>
 		<RootNamespace>FlUnit.Adapters</RootNamespace>
 		<!--<PackageId>FlUnit.Adapters.VSTest</PackageId>-->
@@ -19,7 +19,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FlUnit.Abstractions" Version="2.0.1" GeneratePathProperty="true" />
+		<PackageReference Include="FlUnit.Abstractions" Version="2.0.0" GeneratePathProperty="true">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,24 +31,10 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<!-- Ick. Hacky. Really don't want to have to do this. Would much rather just include:
-	     <None Include="$(PkgFlUnit_Abstractions)\lib\**\*.dll" Pack="true" PackagePath="build\%(RecursiveDir)" Visible="false" />
-		 but PkgFlUnit_Abstractions only defined if TargetFramework is set, which, now that this project multi-targets, is not
-		 set in the "overall" build. Means I have to gitignore these dlls, and smells like an SDK bug to me, but.. meh. -->
-	<Target Name="CopyAbstractionsLibs" AfterTargets="Build">
-	  <ItemGroup>
-		<AbstractionLibs Include="$(PkgFlUnit_Abstractions)\lib\**\FlUnit.Abstractions.dll" Visible="false" />
-	  </ItemGroup>
-      <Copy SourceFiles="@(AbstractionLibs)" DestinationFolder="build\%(RecursiveDir)" />
-	</Target>
-
-	<PropertyGroup Condition="'$(PkgFlUnit_Abstractions)' == ''">
-		<FlUnitAbstractionsPath>$(PkgFlUnit_Abstractions)</FlUnitAbstractionsPath>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<None Include="build\**\*" Pack="true" PackagePath="build\" />
 		<None Include="lib\**\*" Pack="true" PackagePath="lib\" />
+		<None Include="$(PkgFlUnit_Abstractions)\lib\$(TargetFramework)\FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
 	</ItemGroup>
 
     <ItemGroup>
