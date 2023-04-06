@@ -32,15 +32,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="_PackageFiles\FlUnit.Adapters.VSTest.md" Pack="true" PackagePath="README.md" />
+		<None Include="..\FlUnitIcon.png" Pack="true" PackagePath="\" Link="_PackageFiles\FlUnitIcon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="build\**\*" Pack="true" PackagePath="build\" />
 		<None Include="lib\**\*" Pack="true" PackagePath="lib\" />
 		<None Include="$(PkgFlUnit_Abstractions)\lib\$(TargetFramework)\FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
 	</ItemGroup>
-
-    <ItemGroup>
-        <None Include="..\FlUnitIcon.png" Link="FlUnitIcon.png" Pack="true" PackagePath="\" />
-		<None Include="README.md" Pack="true" PackagePath="" />
-    </ItemGroup>
 
     <ItemGroup>
       <Compile Update="Messages.Designer.cs">
@@ -55,6 +55,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="_PackageFiles\FlUnit.Adapters.VSTest.md" Pack="true" />
     </ItemGroup>
 	
 </Project>
