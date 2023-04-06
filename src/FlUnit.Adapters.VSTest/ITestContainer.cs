@@ -4,7 +4,8 @@ namespace FlUnit.Adapters
 {
     /// <summary>
     /// Interface for test containers passed to the core execution logic (i.e. <see cref="TestRun"/> instances) by adapters.
-    /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the <see cref="TestRun"/> to run the test, as well as the API for reporting its results back to the test runner.
+    /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the <see cref="TestRun"/> to run the test,
+    /// as well as the API for reporting its results back to the test runner.
     /// </summary>
     /// <remarks>
     /// NB: This interface worries me a little - the method signatures are far too influenced by VSTest.
@@ -30,6 +31,9 @@ namespace FlUnit.Adapters
         /// </summary>
         void RecordStart();
 
+        /// <summary>
+        /// Records an individual result for this test.
+        /// </summary>
         /// <remarks>
         /// TODO-MAINTAINABILITY: I don't like this method. Its far too close to the VSTest platform (inc all of the assumptions made re what test
         /// result pluralilty means, and how display names are interpreted). Better to talk in FlUnit terms and expect the adapter do

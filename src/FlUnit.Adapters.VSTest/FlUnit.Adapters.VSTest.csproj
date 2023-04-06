@@ -34,9 +34,6 @@
 	<ItemGroup>
 		<None Include="_PackageFiles\FlUnit.Adapters.VSTest.md" Pack="true" PackagePath="README.md" />
 		<None Link="_PackageFiles\FlUnitIcon.png" Include="..\FlUnitIcon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="_PackageFiles\build\**\*" Pack="true" PackagePath="build\" />
 		<None Include="_PackageFiles\lib\**\*" Pack="true" PackagePath="lib\" />
 		<None Include="$(PkgFlUnit_Abstractions)\lib\$(TargetFramework)\FlUnit.Abstractions.dll" Pack="true" PackagePath="build\$(TargetFramework)" Visible="false" />
