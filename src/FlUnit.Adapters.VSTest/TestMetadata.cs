@@ -4,7 +4,7 @@ using System.Reflection;
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Containers of test metadata - enough for the FlUnit execution logic to run a test.
+    /// Container for test metadata - enough for the FlUnit execution logic to run a test.
     /// </summary>
     internal class TestMetadata
     {
