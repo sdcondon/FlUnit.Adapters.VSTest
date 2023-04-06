@@ -6,7 +6,7 @@ using System.Linq;
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Implementation of <see cref="Partitioner{TSource}"/> that partitions <see cref="ITestContainer"/> by the value of a given trait.
+    /// Implementation of <see cref="Partitioner{TSource}"/> that partitions <see cref="ITestContainer"/>s by the value of a given trait.
     /// That is, all tests with the same value of a given trait are guaranteed to occur in the same partition.
     /// </summary>
     internal class TestContainerTraitPartitioner : Partitioner<ITestContainer>

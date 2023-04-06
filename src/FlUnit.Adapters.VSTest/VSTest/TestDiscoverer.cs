@@ -42,7 +42,7 @@ namespace FlUnit.Adapters.VSTest
             TestRunConfiguration testRunConfiguration)
         {
             // TODO-BUG: the elephant in the room here is that test assemblies that e.g. target different platforms
-            // than that of the discovering app are going to fail on test discovery here. Other frameworks tend
+            // than that of the discovering app are going to fail on test discovery at this point. Other frameworks tend
             // to use reflection-only load for discovery. Of course, we want to allow test code execution on
             // discovery to allow for platform test granularities other than PerTest. At some point, should add
             // graceful fallback to reflection-only load - perhaps with a logged warning that granularity has been
