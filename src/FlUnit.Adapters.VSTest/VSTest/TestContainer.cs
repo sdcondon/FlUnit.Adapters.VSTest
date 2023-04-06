@@ -73,12 +73,12 @@ namespace FlUnit.Adapters.VSTest
 
             };
 
-            foreach (var message in testContext.FlushOutputMessages())
+            foreach (var message in testContext.OutputMessages)
             {
                 result.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, message));
             }
 
-            foreach (var message in testContext.FlushErrorMessages())
+            foreach (var message in testContext.ErrorMessages)
             {
                 result.Messages.Add(new TestResultMessage(TestResultMessage.StandardErrorCategory, message));
             }
@@ -110,19 +110,19 @@ namespace FlUnit.Adapters.VSTest
         /// <summary>
         /// Dumps all VSTest properties and traits to the framework as informational messages. 
         /// </summary>
-        private void Dump()
-        {
-            frameworkHandle.SendMessage(TestMessageLevel.Informational, $"DUMPING TEST '{testCase.GetPropertyValue(testCase.Properties.SingleOrDefault(p => p.Id == "TestCase.DisplayName"))}'");
+        ////private void Dump()
+        ////{
+        ////    frameworkHandle.SendMessage(TestMessageLevel.Informational, $"DUMPING TEST '{testCase.GetPropertyValue(testCase.Properties.SingleOrDefault(p => p.Id == "TestCase.DisplayName"))}'");
 
-            foreach (var property in testCase.Properties)
-            {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tPROPERTY: {property.Id} - {testCase.GetPropertyValue(property)}");
-            }
+        ////    foreach (var property in testCase.Properties)
+        ////    {
+        ////        frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tPROPERTY: {property.Id} - {testCase.GetPropertyValue(property)}");
+        ////    }
 
-            foreach (var trait in testCase.Traits)
-            {
-                frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tTRAIT: {trait.Name} - {trait.Value}");
-            }
-        }
+        ////    foreach (var trait in testCase.Traits)
+        ////    {
+        ////        frameworkHandle.SendMessage(TestMessageLevel.Informational, $"\tTRAIT: {trait.Name} - {trait.Value}");
+        ////    }
+        ////}
     }
 }

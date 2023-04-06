@@ -7,7 +7,7 @@ namespace FlUnit.Adapters
 {
     /// <summary>
     /// Implementation of <see cref="Partitioner{TSource}"/> that partitions <see cref="ITestContainer"/> by the value of a given trait.
-    /// That is, all tests with the same value of a given trait are guarenteed to occur in the same partition.
+    /// That is, all tests with the same value of a given trait are guaranteed to occur in the same partition.
     /// </summary>
     internal class TestContainerTraitPartitioner : Partitioner<ITestContainer>
     {
@@ -50,7 +50,7 @@ namespace FlUnit.Adapters
         }
 
         /// <remarks>
-        /// MS' documentation on custom partitioners could be better - though the presence of a reference example is decisive.
+        /// MS' documentation on custom partitioners could be better - though the presence of a reference example mitigates this significantly.
         /// The idea seems to be for each call to <see cref="IEnumerable{T}.GetEnumerator"/> to return the next dynamic partition.
         /// </remarks>
         private class TestTraitDynamicPartitions : IEnumerable<ITestContainer>

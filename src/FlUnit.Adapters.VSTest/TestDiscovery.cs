@@ -17,12 +17,6 @@ namespace FlUnit.Adapters
         /// <returns>An enumerable of <see cref="TestMetadata"/>, one for each discovered test.</returns>
         public static IEnumerable<TestMetadata> FindTests(Assembly assembly, TestRunConfiguration runConfiguration)
         {
-            (T member, IEnumerable<ITraitProvider> traitProviders) ConcatTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)
-                where T : MemberInfo
-            {
-                return (memberInfo, traitProviders: traitProviders.Concat(memberInfo.GetCustomAttributes().OfType<ITraitProvider>()));
-            }
-
             var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
             // NB: Possible performance concerns here. Benchmarks proj shows that an AsParallel
@@ -36,6 +30,12 @@ namespace FlUnit.Adapters
                     var (testProperty, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
                     return new TestMetadata(testProperty, traitProviders.Select(tp => tp.GetTrait(testProperty)));
                 }));
+        }
+
+        private static (T member, IEnumerable<ITraitProvider> traitProviders) ConcatTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)
+            where T : MemberInfo
+        {
+            return (memberInfo, traitProviders: traitProviders.Concat(memberInfo.GetCustomAttributes().OfType<ITraitProvider>()));
         }
 
         private static bool IsTestProperty(PropertyInfo p)

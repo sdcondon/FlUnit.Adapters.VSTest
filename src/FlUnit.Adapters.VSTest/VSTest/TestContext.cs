@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -8,57 +9,37 @@ namespace FlUnit.Adapters.VSTest
     /// </summary>
     internal class TestContext : ITestContext
     {
-        private readonly Queue<string> outputMessages = new Queue<string>();
-        private readonly Queue<string> errorMessages = new Queue<string>();
+        private readonly List<string> outputMessages = new List<string>();
+        private readonly List<string> errorMessages = new List<string>();
+
+        public IEnumerable<string> OutputMessages => outputMessages;
+
+        public IEnumerable<string> ErrorMessages => errorMessages;
 
         /// <inheritdoc/>
         public void WriteOutput(string output)
         {
-            outputMessages.Enqueue(output);
+            outputMessages.Add(output);
         }
 
         /// <inheritdoc/>
         public void WriteOutputLine(string output)
         {
-            outputMessages.Enqueue(output);
-            outputMessages.Enqueue(Environment.NewLine);
+            outputMessages.Add(output);
+            outputMessages.Add(Environment.NewLine);
         }
 
         /// <inheritdoc/>
         public void WriteError(string error)
         {
-            errorMessages.Enqueue(error);
+            errorMessages.Add(error);
         }
 
         /// <inheritdoc/>
         public void WriteErrorLine(string error)
         {
-            errorMessages.Enqueue(error);
-            errorMessages.Enqueue(Environment.NewLine);
-        }
-
-        /// <summary>
-        /// Flushes all of the currently registered output messages. Intended to be called by the runner when recording a test result.
-        /// </summary>
-        /// <returns>An enumeration of the currently registered output messages.</returns>
-        public IEnumerable<string> FlushOutputMessages()
-        {
-            while (outputMessages.Count > 0)
-            {
-                yield return outputMessages.Dequeue();
-            }
-        }
-
-        /// <summary>
-        /// Flushes all of the currently registered error messages. Intended to be called by the runner when recording a test result.
-        /// </summary>
-        /// <returns>An enumeration of the currently registered error messages.</returns>
-        public IEnumerable<string> FlushErrorMessages()
-        {
-            while (errorMessages.Count > 0)
-            {
-                yield return errorMessages.Dequeue();
-            }
+            errorMessages.Add(error);
+            errorMessages.Add(Environment.NewLine);
         }
     }
 }

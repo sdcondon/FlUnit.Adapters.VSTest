@@ -69,7 +69,7 @@ namespace FlUnit.Adapters.VSTest
             TestRunConfiguration testRunConfiguration)
         {
             // NB: no thread (i.e. re-entry) safety here. VSTest adapters for other frameworks don't seem to bother,
-            // so presumably the platform is well-behaved in this regard, making it un-needed.
+            // so presumably the platform is well-behaved in this regard, making it unneeded.
             if (cancellationTokenSource != null)
             {
                 throw new InvalidOperationException("Test run already in progress");
