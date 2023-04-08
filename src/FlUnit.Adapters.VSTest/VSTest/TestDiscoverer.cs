@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -41,18 +40,10 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             TestRunConfiguration testRunConfiguration)
         {
-            // TODO-BUG: the elephant in the room here is that test assemblies that e.g. target different platforms
-            // than that of the discovering app are going to fail on test discovery at this point. Other frameworks tend
-            // to use reflection-only load for discovery. Of course, we want to allow test code execution on
-            // discovery to allow for platform test granularities other than PerTest. At some point, should add
-            // graceful fallback to reflection-only load - perhaps with a logged warning that granularity has been
-            // forced to PerTest.
-            var assembly = Assembly.LoadFile(source);
+            logger.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {source}");
+            var testMetadata = TestDiscovery.FindTests(source, testRunConfiguration);
 
-            logger.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {assembly.FullName}");
-
-            var testMetadata = TestDiscovery.FindTests(assembly, testRunConfiguration);
-
+            // Arguably this should be common, too - but DiaSession *is* part of VSTest..
             var testCases = new List<TestCase>();
             DiaSession diaSession = null;
             try
@@ -89,7 +80,7 @@ namespace FlUnit.Adapters.VSTest
                     // TODO: Neater message when there are no traits (or simply don't include them - was only a quick and dirty test)
                     logger.SendMessage(
                         TestMessageLevel.Informational,
-                        $"Found test case [{assembly.GetName().Name}]{testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
+                        $"Found test case {testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
                 }
             }
             finally
