@@ -3,7 +3,7 @@
 namespace FlUnit.Adapters
 {
     /// <summary>
-    /// Interface for test containers passed to the core execution logic (i.e. <see cref="TestRun"/> instances) by adapters.
+    /// Interface for test containers passed to the core execution logic (i.e. <see cref="TestRun"/> instances) by test runners.
     /// Includes the <see cref="FlUnit.TestMetadata"/> that enables the <see cref="TestRun"/> to run the test,
     /// as well as the API for reporting its results back to the test runner.
     /// </summary>
