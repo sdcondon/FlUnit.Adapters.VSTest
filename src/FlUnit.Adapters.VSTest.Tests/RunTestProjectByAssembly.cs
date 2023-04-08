@@ -9,6 +9,7 @@ namespace FlUnit.Adapters.VSTest._Tests
 {
     using FlUnit.Adapters.VSTest.Tests.TestProject;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using System;
 
     [TestClass]
     public class RunTestProjectByAssembly
@@ -155,8 +156,27 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
-                    // Lone results should have null display names, so as not to override the test name in the explorer..
-                    new { DisplayName = (string)null, Outcome = TestOutcome.Passed },
+                    new
+                    {
+                        DisplayName = "case 1",
+                        Outcome = TestOutcome.Passed,
+                        Messages = new[]
+                        {
+                            new { Category = "StdOutMsgs", Text = "Hello case 1" + Environment.NewLine },
+                            new { Category = "StdOutMsgs", Text = "Hello case 1 assertion" + Environment.NewLine },
+                        }
+                    },
+
+                    new
+                    {
+                        DisplayName = "case 2",
+                        Outcome = TestOutcome.Passed,
+                        Messages = new[]
+                        {
+                            new { Category = "StdOutMsgs", Text = "Hello case 2" + Environment.NewLine },
+                            new { Category = "StdOutMsgs", Text = "Hello case 2 assertion" + Environment.NewLine },
+                        }
+                    },
                 });
 
             ////AssertTestResult(

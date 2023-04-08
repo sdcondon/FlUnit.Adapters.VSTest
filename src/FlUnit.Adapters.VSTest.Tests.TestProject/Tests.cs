@@ -113,12 +113,19 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject
         public static Test TestOutput => new FakeTest(ctx => new FakeCase[]
         {
             new(
-                act: () => ctx.WriteOutputLine("Hello world"),
+                act: () => ctx.WriteOutputLine("Hello case 1"),
                 assertions: new FakeAssertion[]
                 {
-                    new(() => ctx.WriteOutputLine("Hello again"), "lone assertion"),
+                    new(() => ctx.WriteOutputLine("Hello case 1 assertion"), "lone assertion"),
                 },
-                toStringValue: "lone test case"),
+                toStringValue: "case 1"),
+            new(
+                act: () => ctx.WriteOutputLine("Hello case 2"),
+                assertions: new FakeAssertion[]
+                {
+                    new(() => ctx.WriteOutputLine("Hello case 2 assertion"), "lone assertion"),
+                },
+                toStringValue: "case 2"),
         });
 
         // TODO: an exception thrown by the test action is a bad test behaviour - tests are be expected

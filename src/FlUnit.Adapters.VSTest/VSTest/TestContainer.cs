@@ -73,12 +73,12 @@ namespace FlUnit.Adapters.VSTest
 
             };
 
-            foreach (var message in testContext.OutputMessages)
+            foreach (var message in testContext.FlushOutputMessages())
             {
                 result.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, message));
             }
 
-            foreach (var message in testContext.ErrorMessages)
+            foreach (var message in testContext.FlushErrorMessages())
             {
                 result.Messages.Add(new TestResultMessage(TestResultMessage.StandardErrorCategory, message));
             }
