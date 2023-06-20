@@ -12,17 +12,18 @@ namespace FlUnit.Adapters
         /// <summary>
         /// Finds all of the properties that represent tests in a given assembly - along with the traits that are associated with each.
         /// </summary>
-        /// <param name="source">The path of the assembly file to examine for tests.</param>
+        /// <param name="assemblyPath">The path of the assembly file to examine for tests.</param>
         /// <param name="runConfiguration">Unused for the moment. Sue me.</param>
         /// <returns>An enumerable of <see cref="TestMetadata"/>, one for each discovered test.</returns>
-        public static IEnumerable<TestMetadata> FindTests(string source, TestRunConfiguration runConfiguration)
+        public static IEnumerable<TestMetadata> FindTests(string assemblyPath, TestRunConfiguration runConfiguration)
         {
             // TODO-BUG: discovery for assemblies that e.g. target a different platform than that of the discovering app
             // is going to fail with a BadImageFormatException at this point. Other frameworks tend to use reflection-only load
             // for discovery. Of course, we want to allow test code execution on discovery to allow for platform test
             // granularities other than PerTest. At some point, should add graceful fallback to reflection-only load - perhaps
-            // with a logged warning that granularity has been forced to PerTest.
-            var assembly = Assembly.LoadFile(source);
+            // with a logged warning that any config settings that are relevant at test discovery time (i.e. granularity)
+            // will not be applied.
+            var assembly = Assembly.LoadFile(assemblyPath);
 
             var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
