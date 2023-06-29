@@ -19,10 +19,27 @@ namespace FlUnit.Adapters
             Traits = traits;
         }
 
+        public TestMetadata(string internalData, IEnumerable<ITrait> traits)
+        {
+            var propertyDetails = internalData.Split(':');
+            var assembly = Assembly.Load(propertyDetails[0]); // Might already be loaded - not sure of best practices here. Also, expensive call(s) in a ctor is not ideal (though this class is internal..). Fine for now..
+            var type = assembly.GetType(propertyDetails[1]);
+            TestProperty = type.GetProperty(propertyDetails[2]);
+
+            Traits = traits;
+        }
+
         /// <summary>
         /// Gets a <see cref="PropertyInfo"/> for the <see cref="Test"/>-valued property that represents the test.
         /// </summary>
         public PropertyInfo TestProperty { get; }
+
+        /// <summary>
+        /// Gets a serialisable representation of all of the information needed by FlUnit to run the test
+        /// (notably, information about the property from which the test object can be retrieved).
+        /// </summary>
+        // Probably better to use JSON or similar..
+        public string InternalData => $"{TestProperty.DeclaringType.Assembly.GetName().Name}:{TestProperty.DeclaringType.FullName}:{TestProperty.Name}";
 
         /// <summary>
         /// Gets an enumerable of the traits that are applicable to this test.

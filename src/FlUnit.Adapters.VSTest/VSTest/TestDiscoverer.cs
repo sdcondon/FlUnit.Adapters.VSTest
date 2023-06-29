@@ -58,22 +58,24 @@ namespace FlUnit.Adapters.VSTest
 
                 foreach (var testMetadatum in testMetadata)
                 {
-                    var navigationData = diaSession?.GetNavigationData(testMetadatum.TestProperty.DeclaringType.FullName, testMetadatum.TestProperty.GetGetMethod().Name);
+                    var navigationData = diaSession?.GetNavigationData(
+                        testMetadatum.TestProperty.DeclaringType.FullName,
+                        testMetadatum.TestProperty.GetGetMethod().Name);
 
-                    var testCase = new TestCase($"{testMetadatum.TestProperty.DeclaringType.FullName}.{testMetadatum.TestProperty.Name}", Constants.ExecutorUri, source)
+                    var testCase = new TestCase()
                     {
+                        FullyQualifiedName = $"{testMetadatum.TestProperty.DeclaringType.FullName}.{testMetadatum.TestProperty.Name}",
+                        ExecutorUri = Constants.ExecutorUri,
+                        Source = source,
                         CodeFilePath = navigationData?.FileName,
                         LineNumber = navigationData?.MinLineNumber ?? 0,
                     };
 
-                    testCase.Traits.AddRange(testMetadatum.Traits.Select(t => new Trait(t.Name, t.Value)));
-
-                    // Probably better to use JSON or similar..
-                    // ..and in general need to pay more attention to how the serialization between discovery and execution works..
+                    // need to pay more attention to how the serialization between discovery and execution works..
                     // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
-                    testCase.SetPropertyValue(
-                        TestProperties.FlUnitTestProp,
-                        $"{testMetadatum.TestProperty.DeclaringType.Assembly.GetName().Name}:{testMetadatum.TestProperty.DeclaringType.FullName}:{testMetadatum.TestProperty.Name}");
+                    testCase.SetPropertyValue(TestProperties.FlUnitTestProp, testMetadatum.InternalData);
+
+                    testCase.Traits.AddRange(testMetadatum.Traits.Select(t => new Trait(t.Name, t.Value)));
 
                     testCases.Add(testCase);
 
