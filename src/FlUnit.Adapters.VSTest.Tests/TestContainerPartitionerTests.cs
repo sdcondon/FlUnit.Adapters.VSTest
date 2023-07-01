@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace FlUnit.Adapters.VSTest.Tests
 {
@@ -63,7 +64,7 @@ namespace FlUnit.Adapters.VSTest.Tests
         {
             public FakeTestContainer(string traitValue)
             {
-                TestMetadata = new TestMetadata(null, new[]
+                TestMetadata = new TestMetadata((PropertyInfo)null, new[]
                 {
                     new Trait("MyTrait", traitValue)
                 });
