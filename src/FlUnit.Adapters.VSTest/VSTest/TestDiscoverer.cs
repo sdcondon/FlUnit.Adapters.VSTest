@@ -43,7 +43,6 @@ namespace FlUnit.Adapters.VSTest
             logger.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {source}");
             var testMetadata = TestDiscovery.FindTests(source, testRunConfiguration);
 
-            // Arguably this should be common, too - but DiaSession *is* part of VSTest..
             var testCases = new List<TestCase>();
             DiaSession diaSession = null;
             try
@@ -74,15 +73,12 @@ namespace FlUnit.Adapters.VSTest
                     // need to pay more attention to how the serialization between discovery and execution works..
                     // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
                     testCase.SetPropertyValue(TestProperties.FlUnitTestProp, testMetadatum.InternalData);
-
                     testCase.Traits.AddRange(testMetadatum.Traits.Select(t => new Trait(t.Name, t.Value)));
-
                     testCases.Add(testCase);
 
-                    // TODO: Neater message when there are no traits (or simply don't include them - was only a quick and dirty test)
-                    logger.SendMessage(
-                        TestMessageLevel.Informational,
-                        $"Found test case {testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
+                    ////logger.SendMessage(
+                    ////    TestMessageLevel.Informational,
+                    ////    $"Found test case {testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
                 }
             }
             finally

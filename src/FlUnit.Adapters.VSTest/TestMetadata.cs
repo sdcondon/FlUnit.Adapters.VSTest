@@ -19,6 +19,11 @@ namespace FlUnit.Adapters
             Traits = traits;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestMetadata"/> class.
+        /// </summary>
+        /// <param name="internalData">FlUnit's internal data for the test (as provided by the <see cref="InternalData"/> property of another instance).</param>
+        /// <param name="traits">An enumerable of the traits that are applicable to this test.</param>
         public TestMetadata(string internalData, IEnumerable<ITrait> traits)
         {
             var propertyDetails = internalData.Split(':');
