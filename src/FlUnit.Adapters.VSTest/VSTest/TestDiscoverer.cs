@@ -57,24 +57,7 @@ namespace FlUnit.Adapters.VSTest
 
                 foreach (var testMetadatum in testMetadata)
                 {
-                    var navigationData = diaSession?.GetNavigationData(
-                        testMetadatum.TestProperty.DeclaringType.FullName,
-                        testMetadatum.TestProperty.GetGetMethod().Name);
-
-                    var testCase = new TestCase()
-                    {
-                        FullyQualifiedName = $"{testMetadatum.TestProperty.DeclaringType.FullName}.{testMetadatum.TestProperty.Name}",
-                        ExecutorUri = Constants.ExecutorUri,
-                        Source = source,
-                        CodeFilePath = navigationData?.FileName,
-                        LineNumber = navigationData?.MinLineNumber ?? 0,
-                    };
-
-                    // need to pay more attention to how the serialization between discovery and execution works..
-                    // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
-                    testCase.SetPropertyValue(TestProperties.FlUnitTestProp, testMetadatum.InternalData);
-                    testCase.Traits.AddRange(testMetadatum.Traits.Select(t => new Trait(t.Name, t.Value)));
-                    testCases.Add(testCase);
+                    testCases.Add(TestContainer.MakeTestCase(testMetadatum, diaSession, source));
 
                     ////logger.SendMessage(
                     ////    TestMessageLevel.Informational,

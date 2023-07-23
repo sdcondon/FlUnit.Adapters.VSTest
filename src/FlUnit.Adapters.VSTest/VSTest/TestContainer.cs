@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using System;
 using System.Linq;
+using VSTestTrait = Microsoft.VisualStudio.TestPlatform.ObjectModel.Trait;
+using FlUnitTrait = FlUnit.Adapters.Trait;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -11,6 +13,14 @@ namespace FlUnit.Adapters.VSTest
     /// </summary>
     internal class TestContainer : ITestContainer
     {
+        // NB: for some unfathomable reason, property IDs have to be Pascal-cased, with the framework raising an unguessable error message for camel-casing.
+        // But not until after the property has been registered. A violated assumption during the serialization process, maybe?
+        private static readonly TestProperty FlUnitTestProp = TestProperty.Register(
+            "FlUnitTestCase",
+            "flUnit Test Case",
+            typeof(string),
+            typeof(TestExecutor));
+
         private readonly TestCase testCase;
         private readonly IRunContext runContext;
         private readonly IFrameworkHandle frameworkHandle;
@@ -38,6 +48,36 @@ namespace FlUnit.Adapters.VSTest
         public TestMetadata TestMetadata { get; }
 
         /// <summary>
+        /// Instantiates a VSTest <see cref="TestCase"/> from which a <see cref="TestContainer"/> can be loaded (with <see cref="Load"/>) at a later point (generally after a serialization roundtrip).
+        /// </summary>
+        /// <param name="testMetadata">The FlUnit data for the test.</param>
+        /// <param name="diaSession">The diagnostics session from which to retrieve source information. Can be null.</param>
+        /// <param name="source">The file path of test assembly.</param>
+        /// <returns>A new <see cref="TestCase"/> instance.</returns>
+        public static TestCase MakeTestCase(TestMetadata testMetadata, DiaSession diaSession, string source)
+        {
+            var navigationData = diaSession?.GetNavigationData(
+                testMetadata.TestProperty.DeclaringType.FullName,
+                testMetadata.TestProperty.GetGetMethod().Name);
+
+            var testCase = new TestCase()
+            {
+                FullyQualifiedName = $"{testMetadata.TestProperty.DeclaringType.FullName}.{testMetadata.TestProperty.Name}",
+                ExecutorUri = Constants.ExecutorUri,
+                Source = source,
+                CodeFilePath = navigationData?.FileName,
+                LineNumber = navigationData?.MinLineNumber ?? 0,
+            };
+
+            // need to pay more attention to how the serialization between discovery and execution works..
+            // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
+            testCase.SetPropertyValue(FlUnitTestProp, testMetadata.InternalData);
+            testCase.Traits.AddRange(testMetadata.Traits.Select(t => new VSTestTrait(t.Name, t.Value)));
+
+            return testCase;
+        }
+
+        /// <summary>
         /// Loads a new instance of the <see cref="TestContainer"/> class from property information in a given <see cref="TestCase"/>.
         /// </summary>
         /// <param name="testCase">The VSTest platform information for the test</param>
@@ -46,8 +86,8 @@ namespace FlUnit.Adapters.VSTest
         public static TestContainer Load(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             var testMetadata = TestMetadata.Load(
-                (string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp),
-                testCase.Traits.Select(t => new Trait(t.Name, t.Value)));
+                (string)testCase.GetPropertyValue(FlUnitTestProp),
+                testCase.Traits.Select(t => new FlUnitTrait(t.Name, t.Value)));
 
             return new TestContainer(testCase, testMetadata, runContext, frameworkHandle);
         }
