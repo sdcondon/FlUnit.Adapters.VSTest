@@ -48,7 +48,7 @@ namespace FlUnit.Adapters.VSTest
         public TestMetadata TestMetadata { get; }
 
         /// <summary>
-        /// Instantiates a VSTest <see cref="TestCase"/> from which a <see cref="TestContainer"/> can be loaded (with <see cref="Load"/>) at a later point (generally after a serialization roundtrip).
+        /// Instantiates a VSTest <see cref="TestCase"/> from which a <see cref="TestContainer"/> can be loaded (with <see cref="Load"/> - generally after a serialization roundtrip).
         /// </summary>
         /// <param name="testMetadata">The FlUnit data for the test.</param>
         /// <param name="diaSession">The diagnostics session from which to retrieve source information. Can be null.</param>
@@ -63,7 +63,7 @@ namespace FlUnit.Adapters.VSTest
             var testCase = new TestCase()
             {
                 FullyQualifiedName = $"{testMetadata.TestProperty.DeclaringType.FullName}.{testMetadata.TestProperty.Name}",
-                ExecutorUri = Constants.ExecutorUri,
+                ExecutorUri = new Uri(Constants.ExecutorUri),
                 Source = source,
                 CodeFilePath = navigationData?.FileName,
                 LineNumber = navigationData?.MinLineNumber ?? 0,

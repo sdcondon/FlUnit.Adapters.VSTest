@@ -13,7 +13,7 @@ namespace FlUnit.Adapters.VSTest
     /// </summary>
     [FileExtension(".exe")]
     [FileExtension(".dll")]
-    [DefaultExecutorUri(Constants.ExecutorUriString)]
+    [DefaultExecutorUri(Constants.ExecutorUri)]
     public class TestDiscoverer : ITestDiscoverer
     {
         /// <inheritdoc />

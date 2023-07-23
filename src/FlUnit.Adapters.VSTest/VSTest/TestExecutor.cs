@@ -10,7 +10,7 @@ namespace FlUnit.Adapters.VSTest
     /// <summary>
     /// FlUnit's implementation of <see cref="ITestExecutor"/> - takes responsibility for executing tests as discovered by <see cref="TestDiscoverer"/>.
     /// </summary>
-    [ExtensionUri(Constants.ExecutorUriString)]
+    [ExtensionUri(Constants.ExecutorUri)]
     public class TestExecutor : ITestExecutor
     {
         private CancellationTokenSource cancellationTokenSource;
