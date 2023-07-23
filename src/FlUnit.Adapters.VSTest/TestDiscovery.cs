@@ -21,10 +21,14 @@ namespace FlUnit.Adapters
             // is going to fail with a BadImageFormatException at this point. Other frameworks tend to use reflection-only load
             // for discovery. Of course, we want to allow test code execution on discovery to allow for platform test
             // granularities other than PerTest. At some point, should add graceful fallback to reflection-only load - perhaps
-            // with a logged warning that any config settings that are relevant at test discovery time (i.e. granularity)
-            // will not be applied.
+            // with a logged warning that any config settings that granularity has been forced to PerTest.
             var assembly = Assembly.LoadFile(assemblyPath);
 
+            return GetTestPropertiesWithAssociatedTraits(assembly).Select(tp => new TestMetadata(tp.property, tp.traits));
+        }
+
+        private static IEnumerable<(PropertyInfo property, IEnumerable<ITrait> traits)> GetTestPropertiesWithAssociatedTraits(Assembly assembly)
+        {
             var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
 
             // NB: Possible performance concerns here. Benchmarks proj shows that an AsParallel
@@ -36,7 +40,7 @@ namespace FlUnit.Adapters
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p =>
                 {
                     var (testProperty, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
-                    return new TestMetadata(testProperty, traitProviders.Select(tp => tp.GetTrait(testProperty)));
+                    return (testProperty, traitProviders.Select(tp => tp.GetTrait(testProperty)));
                 }));
         }
 

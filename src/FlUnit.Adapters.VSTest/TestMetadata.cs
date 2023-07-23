@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters
 {
@@ -20,21 +21,6 @@ namespace FlUnit.Adapters
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestMetadata"/> class.
-        /// </summary>
-        /// <param name="internalData">FlUnit's internal data for the test (as provided by the <see cref="InternalData"/> property of another instance).</param>
-        /// <param name="traits">An enumerable of the traits that are applicable to this test.</param>
-        public TestMetadata(string internalData, IEnumerable<ITrait> traits)
-        {
-            var propertyDetails = internalData.Split(':');
-            var assembly = Assembly.Load(propertyDetails[0]); // Might already be loaded - not sure of best practices here. Also, expensive call(s) in a ctor is not ideal (though this class is internal..). Fine for now..
-            var type = assembly.GetType(propertyDetails[1]);
-            TestProperty = type.GetProperty(propertyDetails[2]);
-
-            Traits = traits;
-        }
-
-        /// <summary>
         /// Gets a <see cref="PropertyInfo"/> for the <see cref="Test"/>-valued property that represents the test.
         /// </summary>
         public PropertyInfo TestProperty { get; }
@@ -50,5 +36,19 @@ namespace FlUnit.Adapters
         /// Gets an enumerable of the traits that are applicable to this test.
         /// </summary>
         public IEnumerable<ITrait> Traits { get; }
+
+        /// <summary>
+        /// Loads a new instance of the <see cref="TestMetadata"/> class from serialized information.
+        /// Loads the relevant assembly if necessary.
+        /// </summary>
+        /// <param name="internalData">FlUnit's internal data for the test (as provided by the <see cref="InternalData"/> property of another instance).</param>
+        /// <param name="traits">An enumerable of the traits that are applicable to this test.</param>
+        public static TestMetadata Load(string internalData, IEnumerable<ITrait> traits)
+        {
+            var propertyDetails = internalData.Split(':');
+            var assembly = Assembly.Load(propertyDetails[0]); // Might already be loaded - not sure of best practices here.
+            var type = assembly.GetType(propertyDetails[1]);
+            return new TestMetadata(type.GetProperty(propertyDetails[2]), traits);
+        }
     }
 }

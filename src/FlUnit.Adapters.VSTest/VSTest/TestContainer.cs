@@ -20,16 +20,13 @@ namespace FlUnit.Adapters.VSTest
         /// Initializes a new instance of the <see cref="TestContainer"/> class.
         /// </summary>
         /// <param name="testCase">The VSTest platform information for the test</param>
+        /// <param name="testMetadata">The FlUnit information for the test.</param>
         /// <param name="runContext">The VSTest <see cref="IRunContext"/> that the test is being executed in.</param>
         /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
-        public TestContainer(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        public TestContainer(TestCase testCase, TestMetadata testMetadata, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             this.testCase = testCase;
-
-            TestMetadata = new TestMetadata(
-                (string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp),
-                testCase.Traits.Select(t => new Trait(t.Name, t.Value)));
-
+            this.TestMetadata = testMetadata;
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
             this.testContext = new TestContext();
@@ -39,6 +36,21 @@ namespace FlUnit.Adapters.VSTest
 
         /// <inheritdoc/>
         public TestMetadata TestMetadata { get; }
+
+        /// <summary>
+        /// Loads a new instance of the <see cref="TestContainer"/> class from property information in a given <see cref="TestCase"/>.
+        /// </summary>
+        /// <param name="testCase">The VSTest platform information for the test</param>
+        /// <param name="runContext">The VSTest <see cref="IRunContext"/> that the test is being executed in.</param>
+        /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
+        public static TestContainer Load(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        {
+            var testMetadata = TestMetadata.Load(
+                (string)testCase.GetPropertyValue(TestProperties.FlUnitTestProp),
+                testCase.Traits.Select(t => new Trait(t.Name, t.Value)));
+
+            return new TestContainer(testCase, testMetadata, runContext, frameworkHandle);
+        }
 
         /// <inheritdoc/>
         public ITestContext TestContext => testContext;
