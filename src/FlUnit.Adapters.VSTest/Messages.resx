@@ -122,7 +122,7 @@
     <comment>0: exception message</comment>
   </data>
   <data name="DefaultResultNamingStrategyFormat" xml:space="preserve">
-    <value>{0} for {1}</value>
+    <value>For {1}, {0}</value>
     <comment>0: assertion description, 1: test case description</comment>
   </data>
 </root>

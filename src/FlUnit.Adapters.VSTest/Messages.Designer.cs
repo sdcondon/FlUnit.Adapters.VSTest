@@ -70,7 +70,7 @@ namespace FlUnit.Adapters {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} for {1}.
+        ///   Looks up a localized string similar to For {1}, {0}.
         /// </summary>
         internal static string DefaultResultNamingStrategyFormat {
             get {

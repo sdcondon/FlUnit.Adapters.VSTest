@@ -19,9 +19,10 @@ namespace FlUnit.Adapters
         {
             // TODO-BUG: discovery for assemblies that e.g. target a different platform than that of the discovering app
             // is going to fail with a BadImageFormatException at this point. Other frameworks tend to use reflection-only load
-            // for discovery. Of course, we want to allow test code execution on discovery to allow for platform test
+            // for discovery. Of course, we ultimately want to allow test code execution on discovery to allow for platform test
             // granularities other than PerTest. At some point, should add graceful fallback to reflection-only load - perhaps
             // with a logged warning that any config settings that granularity has been forced to PerTest.
+            // NB: ReflectionOnlyLoadFrom now obsolete - instead use https://learn.microsoft.com/en-gb/dotnet/standard/assembly/inspect-contents-using-metadataloadcontext
             var assembly = Assembly.LoadFile(assemblyPath);
 
             return GetTestPropertiesWithAssociatedTraits(assembly).Select(tp => new TestMetadata(tp.property, tp.traits));

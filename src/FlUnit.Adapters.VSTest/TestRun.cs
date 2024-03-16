@@ -29,29 +29,49 @@ namespace FlUnit.Adapters
         /// Executes the test run.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token that, if triggered, should cause the test run to abort.</param>
-        public void Execute(CancellationToken cancellationToken)
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             if (testRunConfiguration.Parallelise)
             {
                 if (!string.IsNullOrEmpty(testRunConfiguration.ParallelPartitioningTrait))
                 {
+#if NET6_0_OR_GREATER
                     Parallel.ForEach(
                         new TestContainerTraitPartitioner(testContainers, testRunConfiguration.ParallelPartitioningTrait),
                         new ParallelOptions()
                         {
                             CancellationToken = cancellationToken
                         },
-                        tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+                        tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).AsTask().GetAwaiter().GetResult());
+#else
+                    Parallel.ForEach(
+                        new TestContainerTraitPartitioner(testContainers, testRunConfiguration.ParallelPartitioningTrait),
+                        new ParallelOptions()
+                        {
+                            CancellationToken = cancellationToken
+                        },
+                        tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).GetAwaiter().GetResult());
+#endif
                 }
                 else
                 {
+#if NET6_0_OR_GREATER
+                    await Parallel.ForEachAsync(
+                        testContainers,
+                        new ParallelOptions()
+                        {
+                            CancellationToken = cancellationToken
+                        },
+                        (tc, ct) => RunTestAsync(tc, testRunConfiguration.TestConfiguration));
+#else
                     Parallel.ForEach(
                         testContainers,
                         new ParallelOptions()
                         {
                             CancellationToken = cancellationToken
                         },
-                        tc => RunTest(tc, testRunConfiguration.TestConfiguration));
+                        tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).GetAwaiter().GetResult());
+#endif
                 }
             }
             else
@@ -59,12 +79,16 @@ namespace FlUnit.Adapters
                 foreach (var testContainer in testContainers)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    RunTest(testContainer, testRunConfiguration.TestConfiguration);
+                    await RunTestAsync(testContainer, testRunConfiguration.TestConfiguration);
                 }
             }
         }
 
-        private void RunTest(ITestContainer testContainer, TestConfiguration testConfiguration)
+#if NET6_0_OR_GREATER
+        private async ValueTask RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
+#else
+        private async Task RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
+#endif
         {
             using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
             {
@@ -76,18 +100,19 @@ namespace FlUnit.Adapters
 
                 testContainer.RecordStart();
 
-                var testArrangementPassed = TryArrangeTestInstance(test, testContainer, testConfiguration);
+                var testArrangementPassed = await TryArrangeTestInstanceAsync(test, testContainer, testConfiguration);
+
                 var allAssertionsPassed = testArrangementPassed;
                 if (testArrangementPassed)
                 {
                     foreach (var testCase in test.Cases)
                     {
                         var startTime = DateTimeOffset.Now;
-                        testCase.Act();
+                        await testCase.ActAsync();
 
                         foreach (var assertion in testCase.Assertions)
                         {
-                            allAssertionsPassed &= CheckTestAssertion(test, testCase, startTime, assertion, testConfiguration, testContainer);
+                            allAssertionsPassed &= await CheckTestAssertionAsync(test, testCase, startTime, assertion, testConfiguration, testContainer);
                             startTime = DateTimeOffset.Now;
                         }
                     }
@@ -111,13 +136,13 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool TryArrangeTestInstance(Test test, ITestContainer testContainer, ITestConfiguration testConfiguration)
+        private static async Task<bool> TryArrangeTestInstanceAsync(Test test, ITestContainer testContainer, ITestConfiguration testConfiguration)
         {
             var arrangementStartTime = DateTimeOffset.Now;
 
             try
             {
-                test.Arrange(testContainer.TestContext);
+                await test.ArrangeAsync(testContainer.TestContext);
                 return true;
             }
             catch (Exception e)
@@ -136,7 +161,11 @@ namespace FlUnit.Adapters
             }
         }
 
-        private static bool CheckTestAssertion(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
+#if NET6_0_OR_GREATER
+        private static async ValueTask<bool> CheckTestAssertionAsync(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
+#else
+        private static async Task<bool> CheckTestAssertionAsync(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
+#endif
         {
             // NB: Because VSTest test duration is always the sum of the test result durations, having results for each assertion
             // is fighting VSTest a little bit. Rather than include the test action duration in each test result (and this have
@@ -154,7 +183,7 @@ namespace FlUnit.Adapters
             {
                 displayName = testConfiguration.ResultNamingStrategy.GetResultName(test, testCase, assertion);
 
-                assertion.Assert();
+                await assertion.AssertAsync();
                 outcome = TestOutcome.Passed;
                 return true;
             }

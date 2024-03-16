@@ -113,10 +113,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Passed,
                 new[]
                 {
-                    new { DisplayName = "assertion 1 for test case 1", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "assertion 2 for test case 1", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "assertion 1 for test case 2", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "assertion 2 for test case 2", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 1, assertion 1", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 1, assertion 2", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 2, assertion 1", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 2, assertion 2", Outcome = TestOutcome.Passed },
                 });
 
             AssertTestResult(
@@ -128,10 +128,10 @@ namespace FlUnit.Adapters.VSTest._Tests
                 TestOutcome.Failed,
                 new[]
                 {
-                    new { DisplayName = "assertion 1 for test case 1", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "assertion 2 for test case 1", Outcome = TestOutcome.Failed },
-                    new { DisplayName = "assertion 1 for test case 2", Outcome = TestOutcome.Passed },
-                    new { DisplayName = "assertion 2 for test case 2", Outcome = TestOutcome.Failed },
+                    new { DisplayName = "For test case 1, assertion 1", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 1, assertion 2", Outcome = TestOutcome.Failed },
+                    new { DisplayName = "For test case 2, assertion 1", Outcome = TestOutcome.Passed },
+                    new { DisplayName = "For test case 2, assertion 2", Outcome = TestOutcome.Failed },
                 });
 
             AssertTestResult(

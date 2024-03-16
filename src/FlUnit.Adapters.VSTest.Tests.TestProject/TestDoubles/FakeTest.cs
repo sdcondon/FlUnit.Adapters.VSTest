@@ -1,6 +1,7 @@
 ﻿using FlUnit.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
 {
@@ -22,7 +23,19 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
         {
         }
 
-        public override void Arrange(ITestContext context) => cases = arrange(context);
+#if NET6_0_OR_GREATER
+        public override ValueTask ArrangeAsync(ITestContext context)
+        {
+            cases = arrange(context);
+            return ValueTask.CompletedTask;
+        }
+#else
+        public override Task ArrangeAsync(ITestContext context)
+        {
+            cases = arrange(context);
+            return Task.CompletedTask;
+        }
+#endif
 
         public override void Dispose()
         {

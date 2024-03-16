@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
 {
@@ -17,7 +18,19 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
 
         public IReadOnlyCollection<ITestAssertion> Assertions { get; }
 
-        public void Act() => act();
+#if NET6_0_OR_GREATER
+        public ValueTask ActAsync()
+        {
+            act();
+            return ValueTask.CompletedTask;
+        }
+#else
+        public Task ActAsync()
+        {
+            act();
+            return Task.CompletedTask;
+        }
+#endif
 
         public override string ToString() => toStringValue;
 

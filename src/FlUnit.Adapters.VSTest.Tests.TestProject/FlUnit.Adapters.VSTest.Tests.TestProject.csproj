@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net6.0</TargetFramework>
+	<TargetFrameworks>net462;net6.0</TargetFrameworks>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FlUnit.Abstractions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
+    <PackageReference Include="FlUnit.Abstractions" Version="3.0.0-pre.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
   </ItemGroup>
 
   <ItemGroup>

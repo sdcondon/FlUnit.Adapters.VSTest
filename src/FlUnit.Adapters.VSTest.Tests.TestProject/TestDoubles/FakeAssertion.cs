@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
 {
@@ -9,7 +10,19 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject.TestDoubles
 
         public FakeAssertion(Action assert, string toStringValue) => (this.assert, this.toStringValue) = (assert, toStringValue);
 
-        public void Assert() => assert();
+#if NET6_0_OR_GREATER
+        public ValueTask AssertAsync()
+        {
+            assert();
+            return ValueTask.CompletedTask;
+        }
+#else
+        public Task AssertAsync()
+        {
+            assert();
+            return Task.CompletedTask;
+        }
+#endif
 
         public override string ToString() => toStringValue;
 
