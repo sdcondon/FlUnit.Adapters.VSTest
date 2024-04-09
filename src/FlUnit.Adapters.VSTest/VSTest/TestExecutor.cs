@@ -84,7 +84,7 @@ namespace FlUnit.Adapters.VSTest
                 cancellationTokenSource = new CancellationTokenSource();
 
                 var testRun = new TestRun(
-                    testContainers: testCases.Select(testCase => TestContainer.Load(testCase, runContext, frameworkHandle)),
+                    testContainers: testCases.Select(testCase => TestContainer.Load(testCase, cancellationTokenSource.Token, runContext, frameworkHandle)),
                     testRunConfiguration);
 
                 testRun.ExecuteAsync(cancellationTokenSource.Token).GetAwaiter().GetResult();

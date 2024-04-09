@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -10,6 +11,18 @@ namespace FlUnit.Adapters.VSTest
     {
         private readonly Queue<string> outputMessages = new Queue<string>();
         private readonly Queue<string> errorMessages = new Queue<string>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestContext"/> class.
+        /// </summary>
+        /// <param name="testCancellation">A cancellation token for test execution.</param>
+        public TestContext(CancellationToken testCancellation)
+        {
+            TestCancellation = testCancellation;
+        }
+
+        /// <inheritdoc/>
+        public CancellationToken TestCancellation { get; }
 
         /// <inheritdoc/>
         public void WriteOutput(string output)

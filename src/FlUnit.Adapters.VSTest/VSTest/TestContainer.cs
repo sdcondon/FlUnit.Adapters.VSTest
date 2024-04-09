@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using VSTestTrait = Microsoft.VisualStudio.TestPlatform.ObjectModel.Trait;
 using FlUnitTrait = FlUnit.Adapters.Trait;
+using System.Threading;
 
 namespace FlUnit.Adapters.VSTest
 {
@@ -31,15 +32,16 @@ namespace FlUnit.Adapters.VSTest
         /// </summary>
         /// <param name="testCase">The VSTest platform information for the test</param>
         /// <param name="testMetadata">The FlUnit information for the test.</param>
+        /// <param name="testCancellation">The cancellation token for execution of the test.</param>
         /// <param name="runContext">The VSTest <see cref="IRunContext"/> that the test is being executed in.</param>
         /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
-        public TestContainer(TestCase testCase, TestMetadata testMetadata, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        public TestContainer(TestCase testCase, TestMetadata testMetadata, CancellationToken testCancellation, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             this.testCase = testCase;
             this.TestMetadata = testMetadata;
             this.runContext = runContext;
             this.frameworkHandle = frameworkHandle;
-            this.testContext = new TestContext();
+            this.testContext = new TestContext(testCancellation);
 
             ////Dump();
         }
@@ -83,13 +85,13 @@ namespace FlUnit.Adapters.VSTest
         /// <param name="testCase">The VSTest platform information for the test</param>
         /// <param name="runContext">The VSTest <see cref="IRunContext"/> that the test is being executed in.</param>
         /// <param name="frameworkHandle">The VSTest <see cref="IFrameworkHandle"/> that the test should use for callbacks.</param>
-        public static TestContainer Load(TestCase testCase, IRunContext runContext, IFrameworkHandle frameworkHandle)
+        public static TestContainer Load(TestCase testCase, CancellationToken testCancellation, IRunContext runContext, IFrameworkHandle frameworkHandle)
         {
             var testMetadata = TestMetadata.Load(
                 (string)testCase.GetPropertyValue(FlUnitTestProp),
                 testCase.Traits.Select(t => new FlUnitTrait(t.Name, t.Value)));
 
-            return new TestContainer(testCase, testMetadata, runContext, frameworkHandle);
+            return new TestContainer(testCase, testMetadata, testCancellation, runContext, frameworkHandle);
         }
 
         /// <inheritdoc/>
