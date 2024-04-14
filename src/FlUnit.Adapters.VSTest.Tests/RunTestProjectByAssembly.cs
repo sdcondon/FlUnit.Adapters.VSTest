@@ -135,7 +135,7 @@ namespace FlUnit.Adapters.VSTest._Tests
                 });
 
             AssertTestResult(
-                "FlUnit.Adapters.VSTest.Tests.TestProject.Tests.AtLeast2Seconds",
+                "FlUnit.Adapters.VSTest.Tests.TestProject.Tests.AtLeast5Seconds",
                 new Trait[]
                 {
                     ////new Trait("ClassLevelTrait", "ArchetypalTests")

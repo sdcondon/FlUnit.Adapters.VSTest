@@ -99,10 +99,10 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject
                 toStringValue: "test case 2"),
         });
 
-        public static Test AtLeast2Seconds => new FakeTest(ctx => new FakeCase[]
+        public static Test AtLeast5Seconds => new FakeTest(ctx => new FakeCase[]
         {
             new FakeCase(
-                act: () => Task.Delay(TimeSpan.FromSeconds(2)).Wait(),
+                act: () => Task.Delay(TimeSpan.FromSeconds(5), ctx.TestCancellation).Wait(),
                 assertions: new FakeAssertion[]
                 {
                     new FakeAssertion(() => { }, "lone assertion"),
