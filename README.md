@@ -4,7 +4,7 @@
 
 [![NuGet version (FlUnit.VS.TestAdapter)](https://img.shields.io/nuget/v/FlUnit.VS.TestAdapter.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/) 
 [![NuGet downloads (FlUnit.Adapters.VSTest)](https://img.shields.io/nuget/dt/FlUnit.VS.TestAdapter.svg?style=flat-square)](https://www.nuget.org/packages/FlUnit.VS.TestAdapter/) 
-[![Commits since latest release](https://img.shields.io/github/commits-since/sdcondon/FlUnit.Adapters.VSTest/latest?style=flat-square)](https://github.com/sdcondon/FlUnit.Adapters.VSTest/compare/1.2.1...main)
+[![Commits since latest release](https://img.shields.io/github/commits-since/sdcondon/FlUnit.Adapters.VSTest/latest?style=flat-square)](https://github.com/sdcondon/FlUnit.Adapters.VSTest/compare/1.3.0...main)
 
 This package contains FlUnit's adapter for the VSTest platform - enabling VSTest to find and run FlUnit tests.
 FlUnit is a test framework in which tests are written using [builders](https://en.wikipedia.org/wiki/Builder_pattern) that expose a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface), like this:
