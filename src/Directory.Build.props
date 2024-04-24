@@ -5,10 +5,10 @@
     <Product>FlUnit - A fluent unit test framework</Product>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/sdcondon/FlUnit.Adapters.VSTest.git</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/sdcondon/FlUnit.Adapters.VSTest</PackageProjectUrl>
+    <PackageProjectUrl>https://sdcondon.net/FlUnit</PackageProjectUrl>
 	<PackageReleaseNotes>https://github.com/sdcondon/FlUnit.Adapters.VSTest/releases</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2019-2022 Simon Condon</Copyright>
+    <Copyright>2019-2024 Simon Condon</Copyright>
     <PackageTags>unit test fluent</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

@@ -14,4 +14,4 @@ public static Test SumOfEvenAndOdd => TestThat
   .And((_, y, sum) => sum.Should().BeGreaterThan(y));
 ```
 
-Full documentation can be found via the [FlUnit repository readme](https://github.com/sdcondon/FlUnit).
+Full documentation can be found on the [FlUnit documentation website](https://sdcondon.net/FlUnit).
