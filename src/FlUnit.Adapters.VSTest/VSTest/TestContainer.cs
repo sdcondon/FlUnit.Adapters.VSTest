@@ -2,8 +2,6 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using System;
 using System.Linq;
-using VSTestTrait = Microsoft.VisualStudio.TestPlatform.ObjectModel.Trait;
-using FlUnitTrait = FlUnit.Adapters.Trait;
 using System.Threading;
 
 namespace FlUnit.Adapters.VSTest
@@ -74,7 +72,7 @@ namespace FlUnit.Adapters.VSTest
             // need to pay more attention to how the serialization between discovery and execution works..
             // ..e.g. does the serialised version stick around? Do I need to worry about versioning test cases and executor version?
             testCase.SetPropertyValue(FlUnitTestProp, testMetadata.InternalData);
-            testCase.Traits.AddRange(testMetadata.Traits.Select(t => new VSTestTrait(t.Name, t.Value)));
+            testCase.Traits.AddRange(testMetadata.Traits.Select(t => new Trait(t.Name, t.Value)));
 
             return testCase;
         }
@@ -89,7 +87,7 @@ namespace FlUnit.Adapters.VSTest
         {
             var testMetadata = TestMetadata.Load(
                 (string)testCase.GetPropertyValue(FlUnitTestProp),
-                testCase.Traits.Select(t => new FlUnitTrait(t.Name, t.Value)));
+                testCase.Traits.Select(t => new TraitAttribute(t.Name, t.Value)));
 
             return new TestContainer(testCase, testMetadata, testCancellation, runContext, frameworkHandle);
         }

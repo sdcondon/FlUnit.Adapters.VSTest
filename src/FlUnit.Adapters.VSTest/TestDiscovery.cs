@@ -28,9 +28,9 @@ namespace FlUnit.Adapters
             return GetTestPropertiesWithAssociatedTraits(assembly).Select(tp => new TestMetadata(tp.property, tp.traits));
         }
 
-        private static IEnumerable<(PropertyInfo property, IEnumerable<ITrait> traits)> GetTestPropertiesWithAssociatedTraits(Assembly assembly)
+        private static IEnumerable<(PropertyInfo property, IEnumerable<TraitAttribute> traits)> GetTestPropertiesWithAssociatedTraits(Assembly assembly)
         {
-            var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<ITraitProvider>();
+            var assemblyTraitProviders = assembly.GetCustomAttributes().OfType<TraitAttribute>();
 
             // NB: Possible performance concerns here. Benchmarks proj shows that an AsParallel
             // here slows example test proj run down, though. That may just be due to its small
@@ -40,15 +40,14 @@ namespace FlUnit.Adapters
                 .Select(t => ConcatTraitProviders(t, assemblyTraitProviders))
                 .SelectMany(t => t.member.GetProperties().Where(IsTestProperty).Select(p =>
                 {
-                    var (testProperty, traitProviders) = ConcatTraitProviders(p, t.traitProviders);
-                    return (testProperty, traitProviders.Select(tp => tp.GetTrait(testProperty)));
+                    return ConcatTraitProviders(p, t.traits);
                 }));
         }
 
-        private static (T member, IEnumerable<ITraitProvider> traitProviders) ConcatTraitProviders<T>(T memberInfo, IEnumerable<ITraitProvider> traitProviders)
+        private static (T member, IEnumerable<TraitAttribute> traits) ConcatTraitProviders<T>(T memberInfo, IEnumerable<TraitAttribute> traits)
             where T : MemberInfo
         {
-            return (memberInfo, traitProviders: traitProviders.Concat(memberInfo.GetCustomAttributes().OfType<ITraitProvider>()));
+            return (memberInfo, traits: traits.Concat(memberInfo.GetCustomAttributes().OfType<TraitAttribute>()));
         }
 
         private static bool IsTestProperty(PropertyInfo p)

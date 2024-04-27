@@ -66,7 +66,7 @@ namespace FlUnit.Adapters.VSTest.Tests
             {
                 TestMetadata = new TestMetadata((PropertyInfo)null, new[]
                 {
-                    new Trait("MyTrait", traitValue)
+                    new TraitAttribute("MyTrait", traitValue)
                 });
             }
 
