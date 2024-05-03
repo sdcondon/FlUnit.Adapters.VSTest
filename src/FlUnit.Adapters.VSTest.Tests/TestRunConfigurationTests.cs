@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace FlUnit.Adapters.VSTest._Tests
+namespace FlUnit.Adapters.VSTest.Tests
 {
     [TestClass]
     public class TestRunConfigurationTests

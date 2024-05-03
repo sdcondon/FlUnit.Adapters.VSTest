@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace FlUnit.Adapters.VSTest._Tests.TestDoubles
+namespace FlUnit.Adapters.VSTest.Tests.TestDoubles
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using System.Collections.Concurrent;

@@ -1,12 +1,12 @@
 using FluentAssertions;
-using FlUnit.Adapters.VSTest._Tests.TestDoubles;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
 
-namespace FlUnit.Adapters.VSTest._Tests
+namespace FlUnit.Adapters.VSTest.Tests
 {
+    using FlUnit.Adapters.VSTest.Tests.TestDoubles;
     using FlUnit.Adapters.VSTest.Tests.TestProject;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using System;
