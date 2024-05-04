@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net462;net6.0</TargetFrameworks>
+	<TargetFrameworks>net481;net5.0;net6.0</TargetFrameworks>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 

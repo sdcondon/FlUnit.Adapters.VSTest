@@ -48,6 +48,7 @@ namespace FlUnit.Adapters.VSTest.Tests.TestDoubles
 
         public void SendMessage(TestMessageLevel testMessageLevel, string message)
         {
+            Console.WriteLine(message);
         }
     }
 }

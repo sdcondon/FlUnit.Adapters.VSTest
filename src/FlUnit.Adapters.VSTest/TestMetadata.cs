@@ -6,6 +6,8 @@ namespace FlUnit.Adapters
     /// <summary>
     /// Container for test metadata - enough for the FlUnit execution logic to run a test.
     /// </summary>
+    // TODO: design probably needs to change. on the discovery side, propertyinfo can't be used
+    // outside of mlc, which makes this type a little too fragile. might need to split it?
     internal class TestMetadata
     {
         /// <summary>

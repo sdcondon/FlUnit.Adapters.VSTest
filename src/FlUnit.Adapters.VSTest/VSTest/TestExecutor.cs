@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace FlUnit.Adapters.VSTest
     /// <summary>
     /// FlUnit's implementation of <see cref="ITestExecutor"/> - takes responsibility for executing tests as discovered by <see cref="TestDiscoverer"/>.
     /// </summary>
+    // TODO/BUG: on full framework, we potentially need binding redirects from a config file
+    // alongside the test proj. appdomain for this? .net standard 2.0's appdomain type is
+    // very constrained though, which is a pain.. run an assembly, comms via e.g. named pipe?
+    // ugh..
     [ExtensionUri(Constants.ExecutorUri)]
     public class TestExecutor : ITestExecutor
     {
@@ -21,15 +26,23 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var testRunConfiguration = TestRunConfiguration.ReadFromXml(
-                runContext.RunSettings?.SettingsXml,
-                Constants.FlUnitConfigurationXmlElement);
+            try
+            {
+                var testRunConfiguration = TestRunConfiguration.ReadFromXml(
+                    runContext.RunSettings?.SettingsXml,
+                    Constants.FlUnitConfigurationXmlElement);
 
-            RunTests(
-                TestDiscoverer.MakeTestCases(sources, frameworkHandle, testRunConfiguration),
-                runContext,
-                frameworkHandle,
-                testRunConfiguration);
+                RunTests(
+                    TestDiscoverer.MakeTestCases(sources, frameworkHandle),
+                    runContext,
+                    frameworkHandle,
+                    testRunConfiguration);
+            }
+            catch (Exception e)
+            {
+                frameworkHandle.SendMessage(TestMessageLevel.Error, $"FlUnit test execution failure for [{string.Join(", ", sources)}]: {e}");
+                throw;
+            }
         }
 
         /// <inheritdoc />
@@ -38,15 +51,23 @@ namespace FlUnit.Adapters.VSTest
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            var testRunConfiguration = TestRunConfiguration.ReadFromXml(
+            try
+            {
+                var testRunConfiguration = TestRunConfiguration.ReadFromXml(
                 runContext.RunSettings?.SettingsXml,
                 Constants.FlUnitConfigurationXmlElement);
 
-            RunTests(
-                tests,
-                runContext,
-                frameworkHandle,
-                testRunConfiguration);
+                RunTests(
+                    tests,
+                    runContext,
+                    frameworkHandle,
+                    testRunConfiguration);
+            }
+            catch (Exception e)
+            {
+                frameworkHandle.SendMessage(TestMessageLevel.Error, $"FlUnit test execution failure: {e}");
+                throw;
+            }
         }
 
         /// <inheritdoc />

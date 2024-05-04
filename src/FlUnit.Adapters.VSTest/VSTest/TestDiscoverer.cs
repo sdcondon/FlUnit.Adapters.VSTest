@@ -6,11 +6,17 @@ using System.Linq;
 namespace FlUnit.Adapters.VSTest
 {
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+    using System;
     using System.IO;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// FlUnit's implementation of <see cref="ITestDiscoverer"/> - takes responsibility for discovering tests in a given assembly or assemblies.
     /// </summary>
+    // TODO/BUG: on full framework, we potentially need binding redirects from a config file
+    // alongside the test proj. appdomain for this? .net standard 2.0's appdomain type is
+    // very constrained though, which is a pain.. run an assembly, comms via e.g. named pipe?
+    // ugh..
     [FileExtension(".exe")]
     [FileExtension(".dll")]
     [DefaultExecutorUri(Constants.ExecutorUri)]
@@ -23,27 +29,33 @@ namespace FlUnit.Adapters.VSTest
             IMessageLogger logger,
             ITestCaseDiscoverySink discoverySink)
         {
-            var testRunConfiguration = TestRunConfiguration.ReadFromXml(discoveryContext.RunSettings?.SettingsXml, Constants.FlUnitConfigurationXmlElement);
-            MakeTestCases(sources, logger, testRunConfiguration).ForEach(tc => discoverySink.SendTestCase(tc));
+            try
+            {
+                foreach (var tc in MakeTestCases(sources, logger))
+                {
+                    discoverySink.SendTestCase(tc);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.SendMessage(TestMessageLevel.Error, $"FlUnit test discovery failure for [{string.Join(", ", sources)}]: {e}");
+                throw;
+            }
         }
 
-        internal static List<TestCase> MakeTestCases(
+        internal static IEnumerable<TestCase> MakeTestCases(
             IEnumerable<string> sources,
-            IMessageLogger logger,
-            TestRunConfiguration testRunConfiguration)
+            IMessageLogger logger)
         {
-            return sources.SelectMany(s => MakeTestCases(s, logger, testRunConfiguration)).ToList();
+            return sources.SelectMany(s => MakeTestCases(s, logger));
         }
 
-        private static List<TestCase> MakeTestCases(
+        private static IEnumerable<TestCase> MakeTestCases(
             string source,
-            IMessageLogger logger,
-            TestRunConfiguration testRunConfiguration)
+            IMessageLogger logger)
         {
-            logger.SendMessage(TestMessageLevel.Informational, $"Test discovery started for {source}");
-            var testMetadata = TestDiscovery.FindTests(source, testRunConfiguration);
+            logger.SendMessage(TestMessageLevel.Informational, $"FlUnit test discovery started for {source} on {RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture}");
 
-            var testCases = new List<TestCase>();
             DiaSession diaSession = null;
             try
             {
@@ -55,13 +67,9 @@ namespace FlUnit.Adapters.VSTest
                 {
                 }
 
-                foreach (var testMetadatum in testMetadata)
+                foreach (var testMetadatum in TestDiscovery.FindTests(source))
                 {
-                    testCases.Add(TestContainer.MakeTestCase(testMetadatum, diaSession, source));
-
-                    ////logger.SendMessage(
-                    ////    TestMessageLevel.Informational,
-                    ////    $"Found test case {testCase.FullyQualifiedName}. Traits: {string.Join(", ", testCase.Traits.Select(t => $"{t.Name}={t.Value}"))}");
+                    yield return TestContainer.MakeTestCase(testMetadatum, diaSession, source);
                 }
             }
             finally
@@ -69,7 +77,7 @@ namespace FlUnit.Adapters.VSTest
                 diaSession?.Dispose();
             }
 
-            return testCases;
+            logger.SendMessage(TestMessageLevel.Informational, $"FlUnit test discovery completed for {source} on {RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture}");
         }
     }
 }
