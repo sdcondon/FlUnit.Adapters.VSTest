@@ -35,7 +35,6 @@ namespace FlUnit.Adapters
             {
                 if (!string.IsNullOrEmpty(testRunConfiguration.ParallelPartitioningTrait))
                 {
-#if NET6_0_OR_GREATER
                     Parallel.ForEach(
                         new TestContainerTraitPartitioner(testContainers, testRunConfiguration.ParallelPartitioningTrait),
                         new ParallelOptions()
@@ -43,19 +42,9 @@ namespace FlUnit.Adapters
                             CancellationToken = cancellationToken
                         },
                         tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).AsTask().GetAwaiter().GetResult());
-#else
-                    Parallel.ForEach(
-                        new TestContainerTraitPartitioner(testContainers, testRunConfiguration.ParallelPartitioningTrait),
-                        new ParallelOptions()
-                        {
-                            CancellationToken = cancellationToken
-                        },
-                        tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).GetAwaiter().GetResult());
-#endif
                 }
                 else
                 {
-#if NET6_0_OR_GREATER
                     await Parallel.ForEachAsync(
                         testContainers,
                         new ParallelOptions()
@@ -63,15 +52,6 @@ namespace FlUnit.Adapters
                             CancellationToken = cancellationToken
                         },
                         (tc, ct) => RunTestAsync(tc, testRunConfiguration.TestConfiguration));
-#else
-                    Parallel.ForEach(
-                        testContainers,
-                        new ParallelOptions()
-                        {
-                            CancellationToken = cancellationToken
-                        },
-                        tc => RunTestAsync(tc, testRunConfiguration.TestConfiguration).GetAwaiter().GetResult());
-#endif
                 }
             }
             else
@@ -84,11 +64,7 @@ namespace FlUnit.Adapters
             }
         }
 
-#if NET6_0_OR_GREATER
         private async ValueTask RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
-#else
-        private async Task RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
-#endif
         {
             using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
             {
@@ -161,11 +137,7 @@ namespace FlUnit.Adapters
             }
         }
 
-#if NET6_0_OR_GREATER
         private static async ValueTask<bool> CheckTestAssertionAsync(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
-#else
-        private static async Task<bool> CheckTestAssertionAsync(Test test, ITestCase testCase, DateTimeOffset startTime, ITestAssertion assertion, ITestConfiguration testConfiguration, ITestContainer testContainer)
-#endif
         {
             // NB: Because VSTest test duration is always the sum of the test result durations, having results for each assertion
             // is fighting VSTest a little bit. Rather than include the test action duration in each test result (and this have
