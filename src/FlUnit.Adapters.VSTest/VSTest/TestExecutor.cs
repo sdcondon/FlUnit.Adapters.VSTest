@@ -11,10 +11,6 @@ namespace FlUnit.Adapters.VSTest
     /// <summary>
     /// FlUnit's implementation of <see cref="ITestExecutor"/> - takes responsibility for executing tests as discovered by <see cref="TestDiscoverer"/>.
     /// </summary>
-    // TODO/BUG: on full framework, we potentially need binding redirects from a config file
-    // alongside the test proj. appdomain for this? .net standard 2.0's appdomain type is
-    // very constrained though, which is a pain.. run an assembly, comms via e.g. named pipe?
-    // ugh..
     [ExtensionUri(Constants.ExecutorUri)]
     public class TestExecutor : ITestExecutor
     {
