@@ -12,7 +12,7 @@ namespace FlUnit.Adapters
     /// </summary>
     internal static class TestDiscovery
     {
-        private static readonly AssemblyName AbstractionsAssemblyName = new AssemblyName("FlUnit.Abstractions");
+        private static readonly AssemblyName AbstractionsAssemblyName = new("FlUnit.Abstractions");
 
         /// <summary>
         /// Finds all of the properties that represent tests in a given assembly - along with the traits that are associated with each.
@@ -33,15 +33,13 @@ namespace FlUnit.Adapters
             assemblyPaths.AddRange(Directory.GetFiles(Path.GetDirectoryName(testAssemblyPath), "*.dll"));
             var resolver = new PathAssemblyResolver(assemblyPaths);
 
-            using (var mlc = new MetadataLoadContext(resolver))
-            {
-                var testAssembly = mlc.LoadFromAssemblyPath(testAssemblyPath);
-                var flUnitAbstractionsAssembly = mlc.LoadFromAssemblyName(AbstractionsAssemblyName);
+            using var mlc = new MetadataLoadContext(resolver);
+            var testAssembly = mlc.LoadFromAssemblyPath(testAssemblyPath);
+            var flUnitAbstractionsAssembly = mlc.LoadFromAssemblyName(AbstractionsAssemblyName);
 
-                foreach (var testMetadata in FindTests(testAssembly, flUnitAbstractionsAssembly))
-                {
-                    yield return testMetadata;
-                }
+            foreach (var testMetadata in FindTests(testAssembly, flUnitAbstractionsAssembly))
+            {
+                yield return testMetadata;
             }
         }
 

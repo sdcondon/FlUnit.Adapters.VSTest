@@ -43,15 +43,13 @@ namespace FlUnit.Adapters
                 return new TestRunConfiguration();
             }
 
-            using (var stringReader = new StringReader(xml))
-            using (XmlReader xmlReader = XmlReader.Create(stringReader))
+            using var stringReader = new StringReader(xml);
+            using XmlReader xmlReader = XmlReader.Create(stringReader);
+            while (!xmlReader.EOF && xmlReader.Read() && !xmlReader.IsAtElementWithName(elementName))
             {
-                while (!xmlReader.EOF && xmlReader.Read() && !xmlReader.IsAtElementWithName(elementName))
-                {
-                }
-
-                return ReadFromXml(xmlReader);
             }
+
+            return ReadFromXml(xmlReader);
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace FlUnit.Adapters
         /// <returns>A new <see cref="TestRunConfiguration"/> instance.</returns>
         public static TestRunConfiguration ReadFromXml(XmlReader reader)
         {
-            TestRunConfiguration configuration = new TestRunConfiguration();
+            TestRunConfiguration configuration = new();
 
             if (reader.TryReadToFirstChildElement())
             {

@@ -15,19 +15,19 @@ namespace FlUnit.Adapters.VSTest.Tests
         {
             var partitioner = new TestContainerTraitPartitioner(new FakeTestContainer[]
             {
-                new FakeTestContainer("1"),
-                new FakeTestContainer("2"),
-                new FakeTestContainer("3"),
-                new FakeTestContainer("4"),
+                new("1"),
+                new("2"),
+                new("3"),
+                new("4"),
 
-                new FakeTestContainer("1"),
-                new FakeTestContainer("2"),
-                new FakeTestContainer("3"),
+                new("1"),
+                new("2"),
+                new("3"),
 
-                new FakeTestContainer("1"),
-                new FakeTestContainer("2"),
+                new("1"),
+                new("2"),
 
-                new FakeTestContainer("1"),
+                new("1"),
             }, 
             "MyTrait");
 

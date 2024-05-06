@@ -64,52 +64,51 @@ namespace FlUnit.Adapters
             }
         }
 
-        private async ValueTask RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
+        private static async ValueTask RunTestAsync(ITestContainer testContainer, TestConfiguration testConfiguration)
         {
-            using (var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null))
+            using var test = (Test)testContainer.TestMetadata.TestProperty.GetValue(null);
+
+            if (test.HasConfigurationOverrides)
             {
-                if (test.HasConfigurationOverrides)
+                testConfiguration = testConfiguration.Clone();
+                test.ApplyConfigurationOverrides(testConfiguration);
+            }
+
+            testContainer.RecordStart();
+
+            var testArrangementPassed = await TryArrangeTestInstanceAsync(test, testContainer, testConfiguration);
+
+            var allAssertionsPassed = testArrangementPassed;
+            if (testArrangementPassed)
+            {
+                foreach (var testCase in test.Cases)
                 {
-                    testConfiguration = testConfiguration.Clone();
-                    test.ApplyConfigurationOverrides(testConfiguration);
-                }
+                    var startTime = DateTimeOffset.Now;
+                    await testCase.ActAsync();
 
-                testContainer.RecordStart();
-
-                var testArrangementPassed = await TryArrangeTestInstanceAsync(test, testContainer, testConfiguration);
-
-                var allAssertionsPassed = testArrangementPassed;
-                if (testArrangementPassed)
-                {
-                    foreach (var testCase in test.Cases)
+                    foreach (var assertion in testCase.Assertions)
                     {
-                        var startTime = DateTimeOffset.Now;
-                        await testCase.ActAsync();
-
-                        foreach (var assertion in testCase.Assertions)
-                        {
-                            allAssertionsPassed &= await CheckTestAssertionAsync(test, testCase, startTime, assertion, testConfiguration, testContainer);
-                            startTime = DateTimeOffset.Now;
-                        }
+                        allAssertionsPassed &= await CheckTestAssertionAsync(test, testCase, startTime, assertion, testConfiguration, testContainer);
+                        startTime = DateTimeOffset.Now;
                     }
                 }
-
-                TestOutcome testOutcome;
-                if (!testArrangementPassed)
-                {
-                    testOutcome = testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed : TestOutcome.ArrangementFailed;
-                }
-                else if (!allAssertionsPassed)
-                {
-                    testOutcome = TestOutcome.Failed;
-                }
-                else
-                {
-                    testOutcome = TestOutcome.Passed;
-                }
-
-                testContainer.RecordEnd(testOutcome);
             }
+
+            TestOutcome testOutcome;
+            if (!testArrangementPassed)
+            {
+                testOutcome = testConfiguration.ArrangementFailureCountsAsFailed ? TestOutcome.Failed : TestOutcome.ArrangementFailed;
+            }
+            else if (!allAssertionsPassed)
+            {
+                testOutcome = TestOutcome.Failed;
+            }
+            else
+            {
+                testOutcome = TestOutcome.Passed;
+            }
+
+            testContainer.RecordEnd(testOutcome);
         }
 
         private static async Task<bool> TryArrangeTestInstanceAsync(Test test, ITestContainer testContainer, ITestConfiguration testConfiguration)

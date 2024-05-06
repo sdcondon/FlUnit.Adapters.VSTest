@@ -9,8 +9,8 @@ namespace FlUnit.Adapters.VSTest
     /// </summary>
     internal class TestContext : ITestContext
     {
-        private readonly Queue<string> outputMessages = new Queue<string>();
-        private readonly Queue<string> errorMessages = new Queue<string>();
+        private readonly Queue<string> outputMessages = new();
+        private readonly Queue<string> errorMessages = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestContext"/> class.

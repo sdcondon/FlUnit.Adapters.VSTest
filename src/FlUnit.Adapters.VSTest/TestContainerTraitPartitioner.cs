@@ -12,7 +12,7 @@ namespace FlUnit.Adapters
     internal class TestContainerTraitPartitioner : Partitioner<ITestContainer>
     {
         private readonly IEnumerable<IEnumerable<ITestContainer>> testsByTrait;
-        private readonly object nextGroupLock = new object();
+        private readonly object nextGroupLock = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestTraitPartitioner"/> class.

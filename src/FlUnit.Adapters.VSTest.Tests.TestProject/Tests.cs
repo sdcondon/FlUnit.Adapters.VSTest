@@ -15,115 +15,115 @@ namespace FlUnit.Adapters.VSTest.Tests.TestProject
 
         public static Test SingleCase_SingleAssertion_Positive => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "lone assertion"),
+                    new(() => { }, "lone assertion"),
                 },
                 toStringValue: "lone test case"),
         });
 
         public static Test SingleCase_SingleAssertion_AssertionFailure => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => throw new InvalidOperationException("KABOOM"), "lone assertion"),
+                    new(() => throw new InvalidOperationException("KABOOM"), "lone assertion"),
                 },
                 toStringValue: "lone test case"),
         });
 
         public static Test SingleCase_MultipleAssertions_Positive => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => { }, "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => { }, "assertion 2"),
                 },
                 toStringValue: "lone test case"),
         });
 
         public static Test SingleCase_MultipleAssertions_AssertionFailure => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
                 },
                 toStringValue: "lone test case"),
         });
 
         public static Test MultipleCases_MultipleAssertions_Positive => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => { }, "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => { }, "assertion 2"),
                 },
                 toStringValue: "test case 1"),
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => { }, "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => { }, "assertion 2"),
                 },
                 toStringValue: "test case 2"),
         });
 
         public static Test MultipleCases_MultipleAssertions_AssertionFailure => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
                 },
                 toStringValue: "test case 1"),
-            new FakeCase(
+            new(
                 act: () => { },
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "assertion 1"),
-                    new FakeAssertion(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
+                    new(() => { }, "assertion 1"),
+                    new(() => throw new InvalidOperationException("KABOOM"), "assertion 2"),
                 },
                 toStringValue: "test case 2"),
         });
 
         public static Test AtLeast5Seconds => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => Task.Delay(TimeSpan.FromSeconds(5), ctx.TestCancellation).Wait(),
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => { }, "lone assertion"),
+                    new(() => { }, "lone assertion"),
                 },
                 toStringValue: "lone test case"),
         });
 
         public static Test TestOutput => new FakeTest(ctx => new FakeCase[]
         {
-            new FakeCase(
+            new(
                 act: () => ctx.WriteOutputLine("Hello case 1"),
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => ctx.WriteOutputLine("Hello case 1 assertion"), "lone assertion"),
+                    new(() => ctx.WriteOutputLine("Hello case 1 assertion"), "lone assertion"),
                 },
                 toStringValue: "case 1"),
-            new FakeCase(
+            new(
                 act: () => ctx.WriteOutputLine("Hello case 2"),
                 assertions: new FakeAssertion[]
                 {
-                    new FakeAssertion(() => ctx.WriteOutputLine("Hello case 2 assertion"), "lone assertion"),
+                    new(() => ctx.WriteOutputLine("Hello case 2 assertion"), "lone assertion"),
                 },
                 toStringValue: "case 2"),
         });

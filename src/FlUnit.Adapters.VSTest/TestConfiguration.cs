@@ -22,7 +22,7 @@ namespace FlUnit.Adapters
         /// <returns>A new <see cref="TestConfiguration"/> instance.</returns>
         public static TestConfiguration ReadFromXml(XmlReader reader)
         {
-            TestConfiguration configuration = new TestConfiguration();
+            TestConfiguration configuration = new();
 
             if (reader.TryReadToFirstChildElement())
             {

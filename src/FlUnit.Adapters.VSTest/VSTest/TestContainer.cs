@@ -141,18 +141,14 @@ namespace FlUnit.Adapters.VSTest
             frameworkHandle.RecordEnd(testCase, MapOutcome(outcome));
         }
 
-        private static Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome MapOutcome(TestOutcome flUnitOutome)
+        private static Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome MapOutcome(TestOutcome flUnitOutcome)
         {
-            switch (flUnitOutome)
+            return flUnitOutcome switch
             {
-                case TestOutcome.Passed:
-                    return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed;
-                case TestOutcome.Failed:
-                    return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Failed;
-                case TestOutcome.ArrangementFailed:
-                    return Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Skipped;
-                default:
-                    throw new ArgumentException();
+                TestOutcome.Passed => Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Passed,
+                TestOutcome.Failed => Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Failed,
+                TestOutcome.ArrangementFailed => Microsoft.VisualStudio.TestPlatform.ObjectModel.TestOutcome.Skipped,
+                _ => throw new ArgumentException(nameof(flUnitOutcome)),
             };
         }
 
