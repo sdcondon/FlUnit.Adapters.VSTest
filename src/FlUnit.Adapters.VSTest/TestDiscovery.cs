@@ -47,9 +47,7 @@ namespace FlUnit.Adapters
 
         private static IEnumerable<TestMetadata> FindTests(Assembly testAssembly, Assembly flUnitAbstractionsAssembly)
         {
-            var projectAbstractionsVersion = testAssembly
-                .GetReferencedAssemblies()
-                .SingleOrDefault(n => n.Name == AbstractionsAssemblyName.Name)?.Version.Major;
+            var projectAbstractionsVersion = GetFlUnitAbstractionsReferenceMajorVersion(testAssembly);
 
             // NB: We could be passed an assembly that doesn't use FlUnit - this is fine and not an error - just means we won't find any tests.
             if (projectAbstractionsVersion == null)
@@ -59,16 +57,16 @@ namespace FlUnit.Adapters
 
             // NB: We respect semantic versioning - major revisions mean breaking changes, so
             // in general we only support a single major version of the abstractions - the one referenced by this assembly.
-            var supportedAbstractionsVersion = typeof(Test).Assembly.GetName().Version.Major;
+            var supportedAbstractionsVersion = GetFlUnitAbstractionsReferenceMajorVersion(Assembly.GetExecutingAssembly());
 
             if (projectAbstractionsVersion > supportedAbstractionsVersion)
             {
-                throw new ArgumentException($"The test project references a version of FlUnit that references a version of FlUnit.Abstractions (v{projectAbstractionsVersion}) that is more recent than the version that this version of the adapter supports (v{supportedAbstractionsVersion}.x.x)." +
+                throw new ArgumentException($"The test project references a version of FlUnit that references a version of FlUnit.Abstractions (v{projectAbstractionsVersion}) that is more recent than the version that this version of the adapter supports (v{supportedAbstractionsVersion})." +
                     $"The test adapter needs to be upgraded to one that references v{supportedAbstractionsVersion}.x.x of the FlUnit.Abstractions package (or of course the version of FlUnit used could be downgraded).");
             }
             else if (projectAbstractionsVersion < supportedAbstractionsVersion)
             {
-                throw new ArgumentException($"The test project uses a version of FlUnit that references a version of FlUnit.Abstractions (v{projectAbstractionsVersion}) that is older than the version that this version of the adapter supports (v{supportedAbstractionsVersion}.x.x)." +
+                throw new ArgumentException($"The test project uses a version of FlUnit that references a version of FlUnit.Abstractions (v{projectAbstractionsVersion}) that is older than the version that this version of the adapter supports (v{supportedAbstractionsVersion})." +
                     $"The version of FlUnit used needs to be upgraded to one that references v{supportedAbstractionsVersion}.x.x of the FlUnit.Abstractions package (or of course the version of the adapter used could be downgraded).");
             }
 
@@ -89,6 +87,13 @@ namespace FlUnit.Adapters
                     var (propertyInfo, traits) = ConcatTraits(p, t.traits, traitType);
                     return new TestMetadata(propertyInfo, traits);
                 }));
+        }
+
+        private static int? GetFlUnitAbstractionsReferenceMajorVersion(Assembly assembly)
+        {
+            return assembly
+                .GetReferencedAssemblies()
+                .SingleOrDefault(n => n.Name == AbstractionsAssemblyName.Name)?.Version.Major;
         }
 
         private static (T memberInfo, IEnumerable<TraitAttribute> traits) ConcatTraits<T>(T memberInfo, IEnumerable<TraitAttribute> traits, Type traitAttributeType)
